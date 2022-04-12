@@ -5,7 +5,6 @@ import { AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'seque
     timestamps: true,
     underscored: true,
     paranoid: true,
-    schema: 'diet_consultation',
 })
 
 export class Consultants extends Model {

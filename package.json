@@ -12,7 +12,7 @@
     "migrate:undo": "ts-node node_modules/.bin/sequelize db:migrate:undo",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "NODE_ENV=development nest build --webpack --webpackPath webpack-hmr.config.js --watch",
+    "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

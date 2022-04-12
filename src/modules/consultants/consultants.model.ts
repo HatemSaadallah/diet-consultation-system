@@ -1,14 +1,26 @@
-import { AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { AutoIncrement, Column, DataType, Model, PrimaryKey, Scopes, Table } from 'sequelize-typescript';
 
 @Table({
     tableName: 'Consultants',
     timestamps: true,
     underscored: true,
     paranoid: true,
-    schema: 'diet_consultation',
 })
 
-export class Consultants extends Model {
+@Scopes(() => {
+    return {
+        no_password: {
+        attributes: {
+            exclude: [
+            'password',
+            ],
+        },
+        },
+    };
+})
+
+
+export class Consultants extends Model<Consultants> {
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER)
@@ -20,6 +32,9 @@ export class Consultants extends Model {
     @Column(DataType.STRING)
     username: string;
 
+    @Column(DataType.STRING)
+    password: string;
+   
     @Column(DataType.STRING)
     firstName: string;
 
@@ -40,4 +55,7 @@ export class Consultants extends Model {
 
     @Column(DataType.STRING)
     updatedBy: number;
+
+    
+    
 }
