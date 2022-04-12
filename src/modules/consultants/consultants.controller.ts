@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Logger } from '@nestjs/common';
 import { ConsultantsService } from './consultants.service';
 import { CreateConsultantDto } from './dto/create-consultant.dto';
-import { UpdateConsultantDto } from './dto/update-consultant.dto';
+// import { UpdateConsultantDto } from './dto/update-consultant.dto';
 
 @Controller('consultants')
 export class ConsultantsController {
@@ -9,7 +9,8 @@ export class ConsultantsController {
 
   @Post('signup')
   create(@Body() createConsultantDto: CreateConsultantDto) {
-    return this.consultantsService.create(createConsultantDto);
+    
+    return this.consultantsService.signup(createConsultantDto);
   }
 
   @Get()
@@ -22,10 +23,10 @@ export class ConsultantsController {
     return this.consultantsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateConsultantDto: UpdateConsultantDto) {
-    return this.consultantsService.update(+id, updateConsultantDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateConsultantDto: UpdateConsultantDto) {
+  //   return this.consultantsService.update(+id, updateConsultantDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
