@@ -7,7 +7,7 @@ export default () => ({
       username: process.env.DB_USER || 'root',
       password: process.env.DB_PASS || '',
       database: process.env.DB_NAME_DEVELOPMENT || '',
-      dialect: process.env.DB_DIALECT || 'postgres',
+      dialect: process.env.DB_DIALECT || 'mysql',
     },
     jwt: {
       secret: process.env.JWTKEY || 'secret',
