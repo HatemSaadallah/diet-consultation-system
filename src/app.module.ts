@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ConsultantsModule } from './modules/consultants/consultants.module';
 import { DatabaseModule } from './modules/db/database.module';
@@ -6,6 +6,7 @@ import configFile from 'config';
 
 @Module({
   imports: [
+    CacheModule.register(),
     DatabaseModule,
     ConsultantsModule,
     ConfigModule.forRoot({

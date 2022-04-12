@@ -10,12 +10,23 @@ import { AutoIncrement, Column, DataType, Model, PrimaryKey, Scopes, Table } fro
 @Scopes(() => {
     return {
         no_password: {
-        attributes: {
-            exclude: [
-            'password',
-            ],
+            attributes: {
+                exclude: [
+                    'password',
+                ],
+            },
         },
-        },
+        basic: {
+            attributes: {
+                exclude: [
+                    'updatedAt',
+                    'createdAt',
+                    'updatedBy',
+                    'createdBy',
+                    'deletedAt',
+                ],
+            },
+        }
     };
 })
 
@@ -34,7 +45,7 @@ export class Consultants extends Model<Consultants> {
 
     @Column(DataType.STRING)
     password: string;
-   
+
     @Column(DataType.STRING)
     firstName: string;
 
@@ -55,7 +66,4 @@ export class Consultants extends Model<Consultants> {
 
     @Column(DataType.STRING)
     updatedBy: number;
-
-    
-    
 }

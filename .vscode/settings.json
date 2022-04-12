@@ -4,4 +4,30 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
     },
+//     "todo-tree.highlights.defaultHighlight": {
+//       "icon": "alert",
+//       "type": "text",
+//       "foreground": "#ff0000",
+//       "background": "#ffffff",
+//       "opacity": 50,
+//       "iconColour": "#0000ff",
+//   },
+  "todo-tree.highlights.customHighlight": {
+      "TODO": {
+          "icon": "check",
+          "type": "line"
+      },
+      "FIXME": {
+          "foreground": "#000000",
+          "iconColour": "#ffff00", // yellow rbg = #ffff00
+          "gutterIcon": true
+      },
+      "DONE": {
+          "icon": "verified",
+          "foreground": "#00ff00",
+          "background": "#5f5f5f",
+          "opacity": 50,
+          "type": "line"
+      },
+  }
 }
