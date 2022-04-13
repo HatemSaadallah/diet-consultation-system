@@ -7,12 +7,15 @@ import { LoginConsultantDto } from './dto/login-consultant.dto';
 import { ConsultantInterface } from './objects/consultant.object';
 import { QuestionsService } from '../questions/questions.service';
 import { GetQuestionsDto } from '../questions/dto/get-questions.dto';
-import { QuestionAnswerDto } from '../questions/dto/question-answer.dto';
+import { AnswerDto } from '../answers/dto/answer.dto';
+import { AnswersService } from '../answers/answers.service';
+
 @Controller('consultants')
 export class ConsultantsController {
   constructor(
     private readonly consultantsService: ConsultantsService,
     private readonly questionsService: QuestionsService,
+    private readonly answerService: AnswersService,
   ) { }
 
   @Public()
@@ -32,11 +35,11 @@ export class ConsultantsController {
   }
 
   @Post('answer/:id')
-  answerQuestion(@Param('id') id: string, @Body() answerBody: QuestionAnswerDto) {
+  answerQuestion(@Param('id') id: string, @Body() answerBody: AnswerDto) {
     // convert id to number
     // console.log("ID is ", id);
     
-    return this.questionsService.answerQuestion(+id, answerBody);
+    return this.answerService.answerQuestion(+id, answerBody);
   }
   @Get()
   findAll() {

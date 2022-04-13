@@ -25,9 +25,6 @@ export class Questions extends Model<Questions> {
     @Column(DataType.INTEGER)
     numberOfAnswers: number;
 
-    @Column(DataType.JSON)
-    questionAnswers: object[];
-    
     @Column(DataType.DATE)
     createdAt: Date;
 
