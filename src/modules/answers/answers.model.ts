@@ -14,8 +14,6 @@ import { AutoIncrement, Column, DataType, Model, PrimaryKey, Scopes, Table } fro
                 exclude: [
                     'updatedAt',
                     'createdAt',
-                    'updatedBy',
-                    'createdBy',
                     'deletedAt',
                 ],
             },
@@ -41,7 +39,7 @@ export class Answers extends Model<Answers> {
 
     @Column(DataType.STRING)
     questionId: number;
-    
+
     @Column(DataType.STRING)
     answerTitle: string;
 
