@@ -6,16 +6,18 @@ import { CreateConsultantDto } from './dto/create-consultant.dto';
 import { GetQuestionsDto } from './dto/get-questions.dto';
 import { LoginConsultantDto } from './dto/login-consultant.dto';
 import { ConsultantInterface } from './objects/consultant.object';
-// import { UpdateConsultantDto } from './dto/update-consultant.dto';
-
+import { QuestionsService } from '../questions/questions.service';
 @Controller('consultants')
 export class ConsultantsController {
-  constructor(private readonly consultantsService: ConsultantsService) {}
+  constructor(
+    private readonly consultantsService: ConsultantsService,
+    private readonly questionsService: QuestionsService,
+  ) { }
 
   @Public()
   @Post('signup')
   create(@Body() createConsultantDto: CreateConsultantDto) {
-    
+
     return this.consultantsService.signup(createConsultantDto);
   }
   @Public()
@@ -25,7 +27,7 @@ export class ConsultantsController {
   }
   @Get('questions')
   async getQuestions(@Body() options: GetQuestionsDto) {
-    return this.consultantsService.getQuestions(options);
+    return this.questionsService.getQuestions(options);
   }
   @Get()
   findAll() {
