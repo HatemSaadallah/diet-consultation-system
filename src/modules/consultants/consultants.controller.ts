@@ -31,9 +31,11 @@ export class ConsultantsController {
     return this.questionsService.getQuestions(options);
   }
 
-  @Post(':id')
+  @Post('answer/:id')
   answerQuestion(@Param('id') id: string, @Body() answerBody: QuestionAnswerDto) {
     // convert id to number
+    // console.log("ID is ", id);
+    
     return this.questionsService.answerQuestion(+id, answerBody);
   }
   @Get()
@@ -51,7 +53,7 @@ export class ConsultantsController {
   //   return this.consultantsService.update(+id, updateConsultantDto);
   // }
 
-  @Delete(':id')
+  @Delete('answer/:id')
   remove(@Param('id') id: string) {
     return this.consultantsService.remove(+id);
   }

@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable, CACHE_MANAGER } from '@nestjs/common';
 import { Consultants } from './consultants.model';
 import { CreateConsultantDto } from './dto/create-consultant.dto';
-// import { UpdateConsultantDto } from './dto/update-consultant.dto';
 import { REPOSITORIES } from 'src/common/constants';
 import { comparePassword, ERRORS, hashPassword } from 'src/common/utils';
 import { LoginConsultantDto } from './dto/login-consultant.dto';
@@ -101,7 +100,6 @@ export class ConsultantsService {
     consultantFound.password = "";
     let token: string = generateToken(consultantFound);
 
-    console.log(111111, consultantFound)
     const consultantObject: ConsultantInterface = {
       ...consultantFound['dataValues'],
       token

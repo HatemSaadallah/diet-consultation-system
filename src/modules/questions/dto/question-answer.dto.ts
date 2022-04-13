@@ -2,5 +2,11 @@ import { IsNotEmpty } from "class-validator";
 
 export class QuestionAnswerDto {
     @IsNotEmpty()
-    answer: string;
+    title: string;
+
+    @IsNotEmpty()
+    description: string;
+
+    @IsNotEmpty()
+    recommendations: string;
 }

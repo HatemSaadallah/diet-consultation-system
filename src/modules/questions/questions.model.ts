@@ -26,7 +26,7 @@ export class Questions extends Model<Questions> {
     numberOfAnswers: number;
 
     @Column(DataType.JSON)
-    questionAnswers: string[];
+    questionAnswers: object[];
     
     @Column(DataType.DATE)
     createdAt: Date;
