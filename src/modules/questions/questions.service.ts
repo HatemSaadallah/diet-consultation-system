@@ -40,8 +40,6 @@ export class QuestionsService {
         });
     }
     // DONE: Implement answering questions 
-    
-    // Post answer to question
     async answerQuestion(questionId: number, answerBody: QuestionAnswerDto) {
         const question: Questions = await this.questionRepository.findOne({
             where: {
@@ -58,5 +56,5 @@ export class QuestionsService {
         await question.save();
         return question;
     }
-
+    
 }
