@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
     }
     const user: Consultants = await this.cacheManager.get('consultant');
     const token = await this.cacheManager.get('token');
-
+    
     if(!user || !token) {
       return false;
     }

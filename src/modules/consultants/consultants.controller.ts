@@ -3,6 +3,7 @@ import { Public } from 'src/common/decorators';
 import { Consultants } from './consultants.model';
 import { ConsultantsService } from './consultants.service';
 import { CreateConsultantDto } from './dto/create-consultant.dto';
+import { GetQuestionsDto } from './dto/get-questions.dto';
 import { LoginConsultantDto } from './dto/login-consultant.dto';
 import { ConsultantInterface } from './objects/consultant.object';
 // import { UpdateConsultantDto } from './dto/update-consultant.dto';
@@ -22,7 +23,10 @@ export class ConsultantsController {
   async login(@Body() loginInfo: LoginConsultantDto): Promise<ConsultantInterface> {
     return this.consultantsService.login(loginInfo);
   }
-
+  @Get('questions')
+  async getQuestions(@Body() options: GetQuestionsDto) {
+    return this.consultantsService.getQuestions(options);
+  }
   @Get()
   findAll() {
     return this.consultantsService.findAll();

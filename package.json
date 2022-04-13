@@ -10,6 +10,8 @@
     "build": "nest build",
     "migrate": "ts-node node_modules/.bin/sequelize db:migrate",
     "migrate:undo": "ts-node node_modules/.bin/sequelize db:migrate:undo",
+    "seeds": "ts-node node_modules/.bin/sequelize db:seed:all",
+    "seeds:undo": "ts-node node_modules/.bin/sequelize db:seed:undo",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

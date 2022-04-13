@@ -7,7 +7,7 @@ import { AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from 'seque
     paranoid: true,
 })
 
-export class Consultants extends Model {
+export class Questions extends Model<Questions> {
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER)
