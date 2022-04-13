@@ -40,6 +40,7 @@ export class QuestionsService {
         });
     }
     // DONE: Implement answering questions 
+    // TODO: Insert into the new table of Users
     async answerQuestion(questionId: number, answerBody: QuestionAnswerDto) {
         const question: Questions = await this.questionRepository.findOne({
             where: {
@@ -56,5 +57,5 @@ export class QuestionsService {
         await question.save();
         return question;
     }
-    
+
 }
