@@ -3,10 +3,11 @@ import { Public } from 'src/common/decorators';
 import { Consultants } from './consultants.model';
 import { ConsultantsService } from './consultants.service';
 import { CreateConsultantDto } from './dto/create-consultant.dto';
-import { GetQuestionsDto } from './dto/get-questions.dto';
 import { LoginConsultantDto } from './dto/login-consultant.dto';
 import { ConsultantInterface } from './objects/consultant.object';
 import { QuestionsService } from '../questions/questions.service';
+import { GetQuestionsDto } from '../questions/dto/get-questions.dto';
+import { QuestionAnswerDto } from '../questions/dto/question-answer.dto';
 @Controller('consultants')
 export class ConsultantsController {
   constructor(
@@ -28,6 +29,12 @@ export class ConsultantsController {
   @Get('questions')
   async getQuestions(@Body() options: GetQuestionsDto) {
     return this.questionsService.getQuestions(options);
+  }
+
+  @Post(':id')
+  answerQuestion(@Param('id') id: string, @Body() answerBody: QuestionAnswerDto) {
+    // convert id to number
+    return this.questionsService.answerQuestion(+id, answerBody);
   }
   @Get()
   findAll() {

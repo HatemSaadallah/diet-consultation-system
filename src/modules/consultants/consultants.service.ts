@@ -8,8 +8,6 @@ import { LoginConsultantDto } from './dto/login-consultant.dto';
 import { generateToken } from 'src/common/utils/jwt';
 import { Cache } from 'cache-manager';
 import { ConsultantInterface } from './objects/consultant.object';
-import { Questions } from '../questions/questions.model';
-import { GetQuestionsDto } from './dto/get-questions.dto';
 
 @Injectable()
 export class ConsultantsService {
