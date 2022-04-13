@@ -17,8 +17,7 @@ export class ConsultantsService {
     @Inject(REPOSITORIES.CONSULTANT_REPOSITORY)
     private consultantRepository: typeof Consultants,
 
-    @Inject(REPOSITORIES.QUESTION_REPOSITORIES)
-    private questionRepository: typeof Questions,
+    
 
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache
@@ -122,21 +121,7 @@ export class ConsultantsService {
   }
   // DONE: Implement see all questions
   // DONE: Add pagination
-  getQuestions(options: GetQuestionsDto) {
-    // Add pagination
-    let { size, page } = options;
-    size = size || 5;
-    page = page || 1;
-    
-    
-    return this.questionRepository.findAll({
-      order: [['number_of_answers', 'ASC']],
-      // Get first 5 questions
-      limit: size,
-      // Get range of questions
-      offset: (page - 1) * size,
-    });
-  }
+  
   // TODO: return all consultant info
   findAll() {
     return `This action returns all consultants`;
