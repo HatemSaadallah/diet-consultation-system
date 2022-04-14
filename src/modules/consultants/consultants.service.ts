@@ -1,13 +1,13 @@
-import { HttpException, HttpStatus, Inject, Injectable, CACHE_MANAGER } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { REPOSITORIES } from 'src/common/constants';
+import { CustomLogger } from 'src/common/logger/winston.logger';
+import { comparePassword, EXCEPTIONS, hashPassword } from 'src/common/utils';
+import { generateToken } from 'src/common/utils/jwt';
+import { Questions } from '../questions/questions.model';
 import { Consultants } from './consultants.model';
 import { CreateConsultantDto } from './dto/create-consultant.dto';
-import { REPOSITORIES } from 'src/common/constants';
-import { comparePassword, ERRORS, EXCEPTIONS, hashPassword } from 'src/common/utils';
 import { LoginConsultantDto } from './dto/login-consultant.dto';
-import { generateToken } from 'src/common/utils/jwt';
-import { Cache } from 'cache-manager';
 import { ConsultantInterface } from './objects/consultant.object';
-import { Questions } from '../questions/questions.model';
 
 @Injectable()
 export class ConsultantsService {
@@ -15,12 +15,11 @@ export class ConsultantsService {
     @Inject(REPOSITORIES.CONSULTANT_REPOSITORY)
     private consultantRepository: typeof Consultants,
 
-    @Inject(CACHE_MANAGER)
-    private cacheManager: Cache,
-
     @Inject(REPOSITORIES.QUESTION_REPOSITORY)
     private questionRepository: typeof Questions,
   ) { }
+
+  private readonly logger = new CustomLogger(ConsultantsService.name);
   // DONE: Create a consultant
   async signup(createConsultantDto: CreateConsultantDto): Promise<Consultants> {
     const { password, ...restData } = createConsultantDto;
@@ -28,13 +27,7 @@ export class ConsultantsService {
     const consultantByUsername: Consultants = await this.getConsultantByUserName(createConsultantDto.username);
 
     if (consultantByEmail) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: ERRORS.USER_ALREADY_EXIST,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      EXCEPTIONS.USER_ALREADY_EXIST;
     }
     if (consultantByUsername) {
       EXCEPTIONS.USER_ALREADY_EXIST;
@@ -51,29 +44,15 @@ export class ConsultantsService {
     let consultantFound: Consultants;
     switch(this.emailOrUsername(loginInfo.loginToken)) {
       case "EMAIL":
-        console.log("IS EMAIL");
-        
         consultantFound = await this.getConsultantByEmail(loginInfo.loginToken);
         if (!consultantFound) {
-          throw new HttpException(
-            {
-              status: HttpStatus.BAD_REQUEST,
-              error: ERRORS.USER_NOT_FOUND,
-            },
-            HttpStatus.BAD_REQUEST,
-          );
+          EXCEPTIONS.USER_NOT_FOUND;
         }
         break;
       case "USERNAME":
         consultantFound = await this.getConsultantByUserName(loginInfo.loginToken);
         if (!consultantFound) {
-          throw new HttpException(
-            {
-              status: HttpStatus.BAD_REQUEST,
-              error: ERRORS.USER_NOT_FOUND,
-            },
-            HttpStatus.BAD_REQUEST,
-          );
+          EXCEPTIONS.USER_NOT_FOUND;
         }
     }
     
@@ -83,14 +62,11 @@ export class ConsultantsService {
     }
     consultantFound.password = "";
     let token: string = generateToken(consultantFound);
-
+    this.logger.log(`${consultantFound.username} logged in`);
     const consultantObject: ConsultantInterface = {
       ...consultantFound.get({plain:true}),
       token
     };
-    await this.cacheManager.set('token', token, { ttl: 60 * 60 * 24 });
-    await this.cacheManager.set('consultant', consultantFound.get({plain:true}), { ttl: 60 * 60 * 24 });
-
     return consultantObject;
   }
   async getConsultantByEmail(email: string): Promise<Consultants> {
@@ -99,9 +75,15 @@ export class ConsultantsService {
   async getConsultantByUserName(username: string): Promise<Consultants> {
     return this.consultantRepository.scope('basic').findOne({ where: { username } });
   }
+
   // DONE: Implement see all questions
   // DONE: Add pagination
-  
+  findConsultantByQuestion(consultantId: number): Promise<Consultants> {
+    return this.consultantRepository.scope('basic').findOne({
+      where: { id: consultantId },
+    });
+  }
+
   // TODO: return all consultant info
   findAll() {
     return `This action returns all consultants`;

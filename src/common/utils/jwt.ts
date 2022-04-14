@@ -10,8 +10,6 @@ export const verifyToken: any = (token: string, secret: string) =>
     return decode;
 })
 
-
-
 export const generateToken = (consultant: Consultants) => {
   const token = jwt.sign({ username: consultant.username, email: consultant.email }, 'secret');
   return token;

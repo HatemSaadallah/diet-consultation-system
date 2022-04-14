@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ConsultantsModule } from './modules/consultants/consultants.module';
 import { DatabaseModule } from './modules/db/database.module';
 import configFile from 'config';
+import { CustomLogger } from './common/logger/winston.logger';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import configFile from 'config';
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [ CustomLogger ],
+  exports: [ CustomLogger ],
 })
 export class AppModule {}

@@ -4,15 +4,15 @@ import { Reflector } from "@nestjs/core";
 import { Cache } from 'cache-manager';
 import { Consultants } from "src/modules/consultants/consultants.model";
 import { ConfigService } from "@nestjs/config";
-
+import { ConsultantsService } from "src/modules/consultants/consultants.service";
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly configService: ConfigService,
     private readonly reflector: Reflector,
-    @Inject(CACHE_MANAGER) 
-    private cacheManager: Cache
-    ) {}
+
+    private readonly consultantService: ConsultantsService,
+  ) { }
   async canActivate(
     context: ExecutionContext,
   ): Promise<boolean> {
@@ -23,17 +23,21 @@ export class AuthGuard implements CanActivate {
     if (isPublic) {
       return true;
     }
-    const user: Consultants = await this.cacheManager.get('consultant');
-    const token = await this.cacheManager.get('token');
-    
-    if(!user || !token) {
+
+    const request = context.switchToHttp().getRequest();
+    const { token } = request.headers;
+    if (!token) {
       return false;
     }
-    
-    const decoded = verifyToken(token, this.configService.get('JWTKEY') || 'secret');
 
-    if(!decoded) return false;
-
-    return decoded.username == user.username;
+    try {
+      const data: { id: number } = verifyToken(token, this.configService.get('JWTKEY'));
+      const consultant = await this.consultantService.findConsultantByQuestion(data.id);
+      request.consultant = consultant;
+      request.consultant.consultantId = consultant.id;
+    } catch {
+      return false;
+    }
+    return true;
   }
 }

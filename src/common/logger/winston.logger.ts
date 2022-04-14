@@ -1,4 +1,4 @@
-import { ConsoleLogger, Logger } from "@nestjs/common";
+import { ConsoleLogger } from "@nestjs/common";
 import * as winston from 'winston';
 
 const logger = winston.createLogger({
@@ -6,7 +6,6 @@ const logger = winston.createLogger({
         new winston.transports.Console()
     ]
 });
-
 
 export class CustomLogger extends ConsoleLogger {
     debug(message: string) {
