@@ -3,6 +3,6 @@ export const ERRORS = {
     USER_NOT_FOUND: 'User not found',
     USER_ALREADY_EXIST: 'User already exist',
     USER_NOT_AUTHORIZED: 'User not authorized',
-    TODO_ALREADY_DELETED: 'Todo already deleted',
+    ALREADY_DELETED: 'Todo already deleted',
     PASSWORD_INCORRECT: 'Password is incorrect',
 };

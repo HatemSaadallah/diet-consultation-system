@@ -38,15 +38,6 @@ const EXCEPTIONS  =  {
             HttpStatus.BAD_REQUEST,
         );
     },
-    TODO_ALREADY_DELETED : () => {
-        throw new HttpException(
-            {
-                status: HttpStatus.BAD_REQUEST,
-                error: ERRORS.TODO_ALREADY_DELETED,
-            },
-            HttpStatus.BAD_REQUEST,
-        );
-    },
 
     PASSWORD_INCORRECT: () => {
         throw new HttpException(

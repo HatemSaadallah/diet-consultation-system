@@ -5,6 +5,7 @@ import { Cache } from 'cache-manager';
 import { Consultants } from "src/modules/consultants/consultants.model";
 import { ConfigService } from "@nestjs/config";
 import { ConsultantsService } from "src/modules/consultants/consultants.service";
+import { EXCEPTIONS } from "../utils";
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -25,16 +26,24 @@ export class AuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
+    
     const { token } = request.headers;
+    // console.log(token);
     if (!token) {
       return false;
     }
 
     try {
-      const data: { id: number } = verifyToken(token, this.configService.get('JWTKEY'));
+      const data = verifyToken(token, this.configService.get('JWTKEY'));
+      console.log(data);
+      
       const consultant = await this.consultantService.findConsultantByQuestion(data.id);
+      console.log(consultant);
+      
       request.consultant = consultant;
       request.consultant.consultantId = consultant.id;
+      console.log(request.consultant);
+      
     } catch {
       return false;
     }

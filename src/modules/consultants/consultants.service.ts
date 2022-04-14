@@ -3,7 +3,6 @@ import { REPOSITORIES } from 'src/common/constants';
 import { CustomLogger } from 'src/common/logger/winston.logger';
 import { comparePassword, EXCEPTIONS, hashPassword } from 'src/common/utils';
 import { generateToken } from 'src/common/utils/jwt';
-import { Questions } from '../questions/questions.model';
 import { Consultants } from './consultants.model';
 import { CreateConsultantDto } from './dto/create-consultant.dto';
 import { LoginConsultantDto } from './dto/login-consultant.dto';
@@ -15,8 +14,6 @@ export class ConsultantsService {
     @Inject(REPOSITORIES.CONSULTANT_REPOSITORY)
     private consultantRepository: typeof Consultants,
 
-    @Inject(REPOSITORIES.QUESTION_REPOSITORY)
-    private questionRepository: typeof Questions,
   ) { }
 
   private readonly logger = new CustomLogger(ConsultantsService.name);

@@ -7,10 +7,11 @@ export const verifyToken: any = (token: string, secret: string) =>
     if (err) {
       return err;
     }
+
     return decode;
 })
 
 export const generateToken = (consultant: Consultants) => {
-  const token = jwt.sign({ username: consultant.username, email: consultant.email }, 'secret');
+  const token = jwt.sign({ username: consultant.username, email: consultant.email, id: consultant.id }, process.env.JWTKEY);
   return token;
 }
