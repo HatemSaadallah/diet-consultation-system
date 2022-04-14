@@ -46,9 +46,9 @@ export class ConsultantsController {
     return this.consultantsService.findAll();
   }
 
-  @Get(':id')
+  @Get('/question/:id')
   findOne(@Param('id') id: string) {
-    return this.consultantsService.findOne(+id);
+    return this.answerService.getAnswersForQuestion(+id);
   }
 
   // @Patch(':id')

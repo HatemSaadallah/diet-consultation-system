@@ -2,11 +2,12 @@ import { HttpException, HttpStatus, Inject, Injectable, CACHE_MANAGER } from '@n
 import { Consultants } from './consultants.model';
 import { CreateConsultantDto } from './dto/create-consultant.dto';
 import { REPOSITORIES } from 'src/common/constants';
-import { comparePassword, ERRORS, hashPassword } from 'src/common/utils';
+import { comparePassword, ERRORS, EXCEPTIONS, hashPassword } from 'src/common/utils';
 import { LoginConsultantDto } from './dto/login-consultant.dto';
 import { generateToken } from 'src/common/utils/jwt';
 import { Cache } from 'cache-manager';
 import { ConsultantInterface } from './objects/consultant.object';
+import { Questions } from '../questions/questions.model';
 
 @Injectable()
 export class ConsultantsService {
@@ -14,10 +15,11 @@ export class ConsultantsService {
     @Inject(REPOSITORIES.CONSULTANT_REPOSITORY)
     private consultantRepository: typeof Consultants,
 
-    
-
     @Inject(CACHE_MANAGER)
-    private cacheManager: Cache
+    private cacheManager: Cache,
+
+    @Inject(REPOSITORIES.QUESTION_REPOSITORY)
+    private questionRepository: typeof Questions,
   ) { }
   // DONE: Create a consultant
   async signup(createConsultantDto: CreateConsultantDto): Promise<Consultants> {
@@ -35,13 +37,7 @@ export class ConsultantsService {
       );
     }
     if (consultantByUsername) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: ERRORS.USERNAME_USED,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      EXCEPTIONS.USER_ALREADY_EXIST;
     }
     const hashedPassword = await hashPassword(password);
 
@@ -50,13 +46,7 @@ export class ConsultantsService {
   // DONE: Implement Login Feature
   async login(loginInfo: LoginConsultantDto): Promise<ConsultantInterface> {
     if (!loginInfo.loginToken) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: ERRORS.ENTER_USERNAME_OR_EMAIL,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      EXCEPTIONS.LOGIN_ERROR;
     }
     let consultantFound: Consultants;
     switch(this.emailOrUsername(loginInfo.loginToken)) {
@@ -89,23 +79,17 @@ export class ConsultantsService {
     
     const isPasswordValid = await comparePassword(loginInfo.password, consultantFound.password);
     if (!isPasswordValid) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: ERRORS.PASSWORD_INCORRECT,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+      EXCEPTIONS.PASSWORD_INCORRECT;
     }
     consultantFound.password = "";
     let token: string = generateToken(consultantFound);
 
     const consultantObject: ConsultantInterface = {
-      ...consultantFound['dataValues'],
+      ...consultantFound.get({plain:true}),
       token
     };
     await this.cacheManager.set('token', token, { ttl: 60 * 60 * 24 });
-    await this.cacheManager.set('consultant', consultantFound['dataValues'], { ttl: 60 * 60 * 24 });
+    await this.cacheManager.set('consultant', consultantFound.get({plain:true}), { ttl: 60 * 60 * 24 });
 
     return consultantObject;
   }
@@ -122,10 +106,14 @@ export class ConsultantsService {
   findAll() {
     return `This action returns all consultants`;
   }
-  // TODO: return consultant info by id
-  findOne(id: number) {
-    return `This action returns a #${id} consultant`;
-  }
+
+
+  // getQuestionWithAnswersById(id: number) {
+  //   return this.questionRepository.findOne(
+  //     { where: { id } },
+
+  //   );
+  // }
 
   // update(id: number, updateConsultantDto: UpdateConsultantDto) {
   //   return `This action updates a #${id} consultant`;
