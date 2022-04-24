@@ -18,14 +18,10 @@ export class AnswersService {
 
         @Inject(REPOSITORIES.CONSULTANT_REPOSITORY)
         private consultantRepository: typeof Consultants,
-
-        @Inject(CACHE_MANAGER)
-        private cacheManager: Cache
     ) { }
     // DONE: Insert into the new table of Users
-    async answerQuestion(questionId: number, answerBody: AnswerDto): Promise<Answers> {
-        const consultant: Consultants = await this.cacheManager.get('consultant');
-        const consultantId = consultant.id;
+    async answerQuestion(questionId: number, answerBody: AnswerDto, consultantInfo: Consultants): Promise<Answers> {
+        const { id } = consultantInfo;
 
         // update the question
         await this.questionRepository.increment('numberOfAnswers', {
@@ -35,10 +31,31 @@ export class AnswersService {
         });
         return this.answerRepository.create({
             ...answerBody,
-            consultantId,
+            consultantId: id,
+            isDraft: new Date(),
             questionId,
             createdAt: new Date(),
         });
+    }
+    // Create draft
+    // TODO: Implement draft feature
+    async createDraft(questionId: number, consultantInfo: Consultants, draftBody: AnswerDto) {
+        console.log(consultantInfo);
+        const { id } = consultantInfo;
+
+        // update the question
+        await this.questionRepository.increment('numberOfAnswers', {
+            where: {
+                id: questionId
+            }
+        });
+        return this.answerRepository.create({
+            ...draftBody,
+            consultantId: id,
+            questionId,
+            createdAt: new Date(),
+        });
+        return `This action creates a draft for ${consultantInfo.username} `;
     }
 
     // DONE: return question info with answers

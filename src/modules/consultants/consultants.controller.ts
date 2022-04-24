@@ -9,6 +9,8 @@ import { QuestionsService } from '../questions/questions.service';
 import { GetQuestionsDto } from '../questions/dto/get-questions.dto';
 import { AnswerDto } from '../answers/dto/answer.dto';
 import { AnswersService } from '../answers/answers.service';
+import { UserInfo } from 'src/common/decorators/user.decorator';
+import { userInfo } from 'os';
 
 @Controller('consultants')
 export class ConsultantsController {
@@ -21,7 +23,7 @@ export class ConsultantsController {
   @Public()
   @Post('signup')
   create(@Body() createConsultantDto: CreateConsultantDto) {
-
+    
     return this.consultantsService.signup(createConsultantDto);
   }
   @Public()
@@ -35,12 +37,18 @@ export class ConsultantsController {
   }
 
   @Post('answer/:id')
-  answerQuestion(@Param('id') id: string, @Body() answerBody: AnswerDto) {
-    // convert id to number
-    // console.log("ID is ", id);
-    
-    return this.answerService.answerQuestion(+id, answerBody);
+  answerQuestion(@UserInfo() consultantInfo: Consultants, @Param('id') id: string, @Body() answerBody: AnswerDto) {
+   
+    return this.answerService.answerQuestion(+id, answerBody, consultantInfo);
   }
+
+  @Post('create-draft/:id')
+  createDraft(@Param('id') id, @UserInfo() consultantInfo: Consultants, @Body() draftBody: AnswerDto) {
+
+    // questionId: number, consultantInfo: Consultants, draftBody: AnswerDto
+    return this.answerService.createDraft(+id, consultantInfo, draftBody);
+  }
+
   @Get()
   findAll() {
     return this.consultantsService.findAll();
@@ -50,6 +58,8 @@ export class ConsultantsController {
   findOne(@Param('id') id: string) {
     return this.answerService.getAnswersForQuestion(+id);
   }
+
+
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateConsultantDto: UpdateConsultantDto) {

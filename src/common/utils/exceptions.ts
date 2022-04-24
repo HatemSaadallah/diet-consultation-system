@@ -48,8 +48,6 @@ const EXCEPTIONS  =  {
             HttpStatus.BAD_REQUEST,
         );
     }
-    
-
 }
 
 export { EXCEPTIONS };

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { REPOSITORIES } from 'src/common/constants';
 import { CustomLogger } from 'src/common/logger/winston.logger';
 import { comparePassword, EXCEPTIONS, hashPassword } from 'src/common/utils';
@@ -22,16 +22,26 @@ export class ConsultantsService {
     const { password, ...restData } = createConsultantDto;
     const consultantByEmail: Consultants = await this.getConsultantByEmail(createConsultantDto.email);
     const consultantByUsername: Consultants = await this.getConsultantByUserName(createConsultantDto.username);
-
+    
     if (consultantByEmail) {
-      EXCEPTIONS.USER_ALREADY_EXIST;
+
+      // EXCEPTIONS.USER_ALREADY_EXIST;
+      throw new HttpException(
+        `User with email ${createConsultantDto.email} already exist`,
+        HttpStatus.BAD_REQUEST,
+      );
+
     }
     if (consultantByUsername) {
-      EXCEPTIONS.USER_ALREADY_EXIST;
+      // EXCEPTIONS.USER_ALREADY_EXIST;
+      throw new HttpException(
+        `User with username ${createConsultantDto.username} already exist`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const hashedPassword = await hashPassword(password);
 
-    return this.consultantRepository.create({ ...restData, 'password': hashedPassword });
+    return this.consultantRepository.create({ ...restData, password: hashedPassword });
   }
   // DONE: Implement Login Feature
   async login(loginInfo: LoginConsultantDto): Promise<ConsultantInterface> {
@@ -75,7 +85,7 @@ export class ConsultantsService {
 
   // DONE: Implement see all questions
   // DONE: Add pagination
-  findConsultantByQuestion(consultantId: number): Promise<Consultants> {
+  findConsultantById(consultantId: number): Promise<Consultants> {
     return this.consultantRepository.scope('basic').findOne({
       where: { id: consultantId },
     });

@@ -50,6 +50,9 @@ export class Answers extends Model<Answers> {
     answerRecommendations: string;
 
     @Column(DataType.DATE)
+    isDraft: Date;
+
+    @Column(DataType.DATE)
     createdAt: Date;
 
     @Column(DataType.DATE)
