@@ -10,7 +10,6 @@ import { GetQuestionsDto } from '../questions/dto/get-questions.dto';
 import { AnswerDto } from '../answers/dto/answer.dto';
 import { AnswersService } from '../answers/answers.service';
 import { UserInfo } from 'src/common/decorators/user.decorator';
-import { userInfo } from 'os';
 
 @Controller('consultants')
 export class ConsultantsController {
@@ -58,9 +57,13 @@ export class ConsultantsController {
   findOne(@Param('id') id: string) {
     return this.answerService.getAnswersForQuestion(+id);
   }
-
-
-
+  // TODO: Implement get drafts feature
+  @Get('/drafts')
+  getDrafts(@UserInfo() consultantInfo: Consultants) {
+    console.log(1111111);
+    
+    return this.answerService.getDrafts(consultantInfo);
+  }
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateConsultantDto: UpdateConsultantDto) {
   //   return this.consultantsService.update(+id, updateConsultantDto);

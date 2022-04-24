@@ -40,7 +40,6 @@ export class AnswersService {
     // Create draft
     // TODO: Implement draft feature
     async createDraft(questionId: number, consultantInfo: Consultants, draftBody: AnswerDto) {
-        console.log(consultantInfo);
         const { id } = consultantInfo;
 
         // update the question
@@ -55,7 +54,6 @@ export class AnswersService {
             questionId,
             createdAt: new Date(),
         });
-        return `This action creates a draft for ${consultantInfo.username} `;
     }
 
     // DONE: return question info with answers
@@ -76,5 +74,16 @@ export class AnswersService {
 
 
         return { question };
+    }
+
+    getDrafts(consultantInfo: Consultants) {
+        const { id } = consultantInfo;
+        return this.answerRepository.findAll({
+            where: {
+                consultantId: id,
+                // If zero is returned, then the answer is a draft
+                isDraft: 0
+            }
+        });
     }
 }
