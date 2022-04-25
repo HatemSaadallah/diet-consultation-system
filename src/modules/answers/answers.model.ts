@@ -34,9 +34,6 @@ export class Answers extends Model<Answers> {
     @Column(DataType.INTEGER)
     id: number;
 
-    @Column(DataType.INTEGER)
-    userId: number;
-
     @Column(DataType.STRING)
     questionId: number;
 
@@ -47,7 +44,7 @@ export class Answers extends Model<Answers> {
     description: string;
 
     @Column(DataType.STRING)
-    recommendation: string;
+    recommendations: string;
 
     @Column(DataType.DATE)
     isDraft: Date;
@@ -55,9 +52,19 @@ export class Answers extends Model<Answers> {
     @Column(DataType.DATE)
     createdAt: Date;
 
+    // make not null
+    @Column(DataType.STRING)
+    createdBy: number;
+
     @Column(DataType.DATE)
     updatedAt: Date;
 
+    @Column(DataType.STRING)
+    updatedBy: string;
+
     @Column(DataType.DATE)
     deletedAt: Date;
+
+    @Column(DataType.STRING)
+    deletedBy: string;
 }

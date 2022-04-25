@@ -17,10 +17,10 @@ export class Questions extends Model<Questions> {
     personName: string;
 
     @Column(DataType.STRING)
-    questionTitle: string;
+    title: string;
 
     @Column(DataType.STRING)
-    questionDescription: string;
+    description: string;
 
     @Column(DataType.INTEGER)
     numberOfAnswers: number;

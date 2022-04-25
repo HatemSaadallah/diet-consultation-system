@@ -30,7 +30,8 @@ export class AnswersService {
         });
         return this.answerRepository.create({
             ...answerBody,
-            userId: id,
+            
+            createdBy: id,
             isDraft: new Date(),
             questionId,
             createdAt: new Date(),
@@ -61,7 +62,7 @@ export class AnswersService {
         });
         return this.answerRepository.create({
             ...draftBody,
-            userId: id,
+            createdBy: id,
             questionId,
             createdAt: new Date(),
         });
@@ -91,7 +92,7 @@ export class AnswersService {
         const { id } = userInfo;
         return this.answerRepository.findAll({
             where: {
-                userId: id,
+                createdBy: id,
                 // If zero is returned, then the answer is a draft
                 isDraft: 0
             }
