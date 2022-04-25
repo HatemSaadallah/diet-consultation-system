@@ -4,7 +4,7 @@ import { REPOSITORIES } from 'src/common/constants';
 
 export const UserProvider = [
   {
-    provide: REPOSITORIES.CONSULTANT_REPOSITORY,
+    provide: REPOSITORIES.USER_REPOSITORY,
     useValue: Users,
   },
 ];

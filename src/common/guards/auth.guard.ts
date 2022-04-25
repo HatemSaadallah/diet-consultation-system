@@ -11,7 +11,7 @@ export class AuthGuard implements CanActivate {
     private readonly configService: ConfigService,
     private readonly reflector: Reflector,
 
-    private readonly consultantService: UserService,
+    private readonly userService: UserService,
   ) { }
   async canActivate(
     context: ExecutionContext,
@@ -35,14 +35,12 @@ export class AuthGuard implements CanActivate {
 
     try {
       const data = verifyToken(token, this.configService.get('JWTKEY'));
-      // console.log(data);
       
-      const consultant = await this.consultantService.findConsultantById(data.id);
-      console.log(consultant.get({ plain: true }) );
+      const user = await this.userService.findUserById(data.id);
+      console.log(user.get({ plain: true }) );
       
-      request.consultant = consultant.get({ plain: true });
-      request.consultant.consultantId = consultant.id;
-      // console.log(request.consultant);
+      request.user = user.get({ plain: true });
+      request.user.userId = user.id;
       
     } catch {
       return false;

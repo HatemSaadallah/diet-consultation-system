@@ -6,42 +6,42 @@ import { generateToken } from 'src/common/utils/jwt';
 import { Users } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { UserInterface } from './objects/consultant.object';
+import { UserInterface } from './objects/user.object';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(REPOSITORIES.CONSULTANT_REPOSITORY)
-    private consultantRepository: typeof Users,
+    @Inject(REPOSITORIES.USER_REPOSITORY)
+    private userRepository: typeof Users,
 
   ) { }
 
   private readonly logger = new CustomLogger(UserService.name);
-  // DONE: Create a consultant
-  async signup(createConsultantDto: CreateUserDto): Promise<Users> {
-    const { password, ...restData } = createConsultantDto;
-    const consultantByEmail: Users = await this.getConsultantByEmail(createConsultantDto.email);
-    const consultantByUsername: Users = await this.getConsultantByUserName(createConsultantDto.username);
+  // DONE: Create a user
+  async signup(createUserDto: CreateUserDto): Promise<Users> {
+    const { password, ...restData } = createUserDto;
+    const userByEmail: Users = await this.getUserByEmail(createUserDto.email);
+    const userByUsername: Users = await this.getUserByUserName(createUserDto.username);
 
-    if (consultantByEmail) {
+    if (userByEmail) {
 
       // EXCEPTIONS.USER_ALREADY_EXIST;
       throw new HttpException(
-        `User with email ${createConsultantDto.email} already exist`,
+        `User with email ${createUserDto.email} already exist`,
         HttpStatus.BAD_REQUEST,
       );
 
     }
-    if (consultantByUsername) {
+    if (userByUsername) {
       // EXCEPTIONS.USER_ALREADY_EXIST;
       throw new HttpException(
-        `User with username ${createConsultantDto.username} already exist`,
+        `User with username ${createUserDto.username} already exist`,
         HttpStatus.BAD_REQUEST,
       );
     }
     const hashedPassword = await hashPassword(password);
 
-    return this.consultantRepository.create({ ...restData, password: hashedPassword });
+    return this.userRepository.create({ ...restData, password: hashedPassword });
   }
   // DONE: Implement Login Feature
   async login(loginInfo: LoginUserDto): Promise<UserInterface> {
@@ -50,11 +50,11 @@ export class UserService {
     if (!loginInfo.loginToken) {
       EXCEPTIONS.LOGIN_ERROR;
     }
-    let consultantFound: Users;
+    let userFound: Users;
     switch (this.emailOrUsername(loginInfo.loginToken)) {
       case "EMAIL":
-        consultantFound = await this.getConsultantByEmail(loginInfo.loginToken);
-        if (!consultantFound) {
+        userFound = await this.getUserByEmail(loginInfo.loginToken);
+        if (!userFound) {
           throw new HttpException(
             {
               status: HttpStatus.BAD_REQUEST,
@@ -65,8 +65,8 @@ export class UserService {
         }
         break;
       case "USERNAME":
-        consultantFound = await this.getConsultantByUserName(loginInfo.loginToken);
-        if (!consultantFound) {
+        userFound = await this.getUserByUserName(loginInfo.loginToken);
+        if (!userFound) {
           throw new HttpException(
             {
               status: HttpStatus.BAD_REQUEST,
@@ -77,52 +77,40 @@ export class UserService {
         }
     }
 
-    const isPasswordValid = await comparePassword(loginInfo.password, consultantFound.password);
+    const isPasswordValid = await comparePassword(loginInfo.password, userFound.password);
     if (!isPasswordValid) {
       EXCEPTIONS.PASSWORD_INCORRECT;
     }
-    consultantFound.password = "";
-    let token: string = generateToken(consultantFound);
-    const consultantObject: UserInterface = {
-      ...consultantFound.get({ plain: true }),
+    userFound.password = "";
+    let token: string = generateToken(userFound);
+    const userObject: UserInterface = {
+      ...userFound.get({ plain: true }),
       token
     };
-    return consultantObject;
+    return userObject;
   }
-  async getConsultantByEmail(email: string): Promise<Users> {
-    return this.consultantRepository.scope('basic').findOne({ where: { email } });
+  async getUserByEmail(email: string): Promise<Users> {
+    return this.userRepository.scope('basic').findOne({ where: { email } });
   }
-  async getConsultantByUserName(username: string): Promise<Users> {
-    return this.consultantRepository.scope('basic').findOne({ where: { username } });
+  async getUserByUserName(username: string): Promise<Users> {
+    return this.userRepository.scope('basic').findOne({ where: { username } });
   }
 
   // DONE: Implement see all questions
   // DONE: Add pagination
-  findConsultantById(consultantId: number): Promise<Users> {
-    return this.consultantRepository.scope('basic').findOne({
-      where: { id: consultantId },
+  findUserById(userId: number): Promise<Users> {
+    return this.userRepository.scope('basic').findOne({
+      where: { id: userId },
     });
   }
 
-  // TODO: return all consultant info
+  // TODO: return all user info
   findAll() {
-    return `This action returns all consultants`;
+    return `This action returns all users`;
   }
 
-
-  // getQuestionWithAnswersById(id: number) {
-  //   return this.questionRepository.findOne(
-  //     { where: { id } },
-
-  //   );
-  // }
-
-  // update(id: number, updateConsultantDto: UpdateConsultantDto) {
-  //   return `This action updates a #${id} consultant`;
-  // }
-
   remove(id: number) {
-    return `This action removes a #${id} consultant`;
+    return `This action removes a #${id} user`;
   }
   // DONE: Check if Input is email or username
   private emailOrUsername(input: string): string {

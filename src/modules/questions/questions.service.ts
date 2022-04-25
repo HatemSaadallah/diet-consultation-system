@@ -2,7 +2,6 @@ import { Inject, Injectable } from "@nestjs/common";
 import { REPOSITORIES } from "src/common/constants";
 import { GetQuestionsDto } from "./dto/get-questions.dto";
 import { Questions } from "./questions.model";
-// import { Consultants } from "../consultants/consultants.model";
 
 @Injectable()
 export class QuestionsService {

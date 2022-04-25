@@ -35,19 +35,19 @@ export class Answers extends Model<Answers> {
     id: number;
 
     @Column(DataType.INTEGER)
-    consultantId: number;
+    userId: number;
 
     @Column(DataType.STRING)
     questionId: number;
 
     @Column(DataType.STRING)
-    answerTitle: string;
+    title: string;
 
     @Column(DataType.STRING)
-    answerDescription: string;
+    description: string;
 
     @Column(DataType.STRING)
-    answerRecommendations: string;
+    recommendation: string;
 
     @Column(DataType.DATE)
     isDraft: Date;

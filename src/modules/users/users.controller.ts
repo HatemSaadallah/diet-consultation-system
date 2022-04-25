@@ -4,31 +4,31 @@ import { Users } from './users.model';
 import { UserService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { UserInterface } from './objects/consultant.object';
+import { UserInterface } from './objects/user.object';
 import { QuestionsService } from '../questions/questions.service';
 import { GetQuestionsDto } from '../questions/dto/get-questions.dto';
 import { AnswerDto } from '../answers/dto/answer.dto';
 import { AnswersService } from '../answers/answers.service';
 import { UserInfo } from 'src/common/decorators/user.decorator';
 
-@Controller('consultants')
-export class ConsultantsController {
+@Controller('users')
+export class UserController {
   constructor(
-    private readonly consultantsService: UserService,
+    private readonly userService: UserService,
     private readonly questionsService: QuestionsService,
     private readonly answerService: AnswersService,
   ) { }
 
   @Public()
   @Post('signup')
-  create(@Body() createConsultantDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto) {
     
-    return this.consultantsService.signup(createConsultantDto);
+    return this.userService.signup(createUserDto);
   }
   @Public()
   @Post('login')
   async login(@Body() loginInfo: LoginUserDto): Promise<UserInterface> {
-    return this.consultantsService.login(loginInfo);
+    return this.userService.login(loginInfo);
   }
   @Get('questions')
   async getQuestions(@Body() options: GetQuestionsDto) {
@@ -36,21 +36,19 @@ export class ConsultantsController {
   }
 
   @Post('answer/:id')
-  answerQuestion(@UserInfo() consultantInfo: Users, @Param('id') id: string, @Body() answerBody: AnswerDto) {
+  answerQuestion(@UserInfo() userInfo: Users, @Param('id') id: string, @Body() answerBody: AnswerDto) {
    
-    return this.answerService.answerQuestion(+id, answerBody, consultantInfo);
+    return this.answerService.answerQuestion(+id, answerBody, userInfo);
   }
 
   @Post('create-draft/:id')
-  createDraft(@Param('id') id, @UserInfo() consultantInfo: Users, @Body() draftBody: AnswerDto) {
-
-    // questionId: number, consultantInfo: Consultants, draftBody: AnswerDto
-    return this.answerService.createDraft(+id, consultantInfo, draftBody);
+  createDraft(@Param('id') id, @UserInfo() userInfo: Users, @Body() draftBody: AnswerDto) {
+    return this.answerService.createDraft(+id, userInfo, draftBody);
   }
 
   @Get()
   findAll() {
-    return this.consultantsService.findAll();
+    return this.userService.findAll();
   }
 
   @Get('/question/:id')
@@ -59,17 +57,14 @@ export class ConsultantsController {
   }
   // TODO: Implement get drafts feature
   @Get('/drafts')
-  getDrafts(@UserInfo() consultantInfo: Users) {
+  getDrafts(@UserInfo() userInfo: Users) {
     
-    return this.answerService.getDrafts(consultantInfo);
+    return this.answerService.getDrafts(userInfo);
   }
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateConsultantDto: UpdateConsultantDto) {
-  //   return this.consultantsService.update(+id, updateConsultantDto);
-  // }
+
 
   @Delete('answer/:id')
   remove(@Param('id') id: string) {
-    return this.consultantsService.remove(+id);
+    return this.userService.remove(+id);
   }
 }

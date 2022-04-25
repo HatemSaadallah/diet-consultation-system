@@ -15,12 +15,12 @@ export class AnswersService {
         @Inject(REPOSITORIES.QUESTION_REPOSITORY)
         private questionRepository: typeof Questions,
 
-        @Inject(REPOSITORIES.CONSULTANT_REPOSITORY)
-        private consultantRepository: typeof Users,
+        @Inject(REPOSITORIES.USER_REPOSITORY)
+        private userRepository: typeof Users,
     ) { }
     // DONE: Insert into the new table of Users
-    async answerQuestion(questionId: number, answerBody: AnswerDto, consultantInfo: Users): Promise<Answers> {
-        const { id } = consultantInfo;
+    async answerQuestion(questionId: number, answerBody: AnswerDto, userInfo: Users): Promise<Answers> {
+        const { id } = userInfo;
 
         // update the question
         await this.questionRepository.increment('numberOfAnswers', {
@@ -30,7 +30,7 @@ export class AnswersService {
         });
         return this.answerRepository.create({
             ...answerBody,
-            consultantId: id,
+            userId: id,
             isDraft: new Date(),
             questionId,
             createdAt: new Date(),
@@ -38,8 +38,8 @@ export class AnswersService {
     }
     // Create draft
     // TODO: Implement draft feature
-    async createDraft(questionId: number, consultantInfo: Users, draftBody: AnswerDto) {
-        const { id } = consultantInfo;
+    async createDraft(questionId: number, userInfo: Users, draftBody: AnswerDto) {
+        const { id } = userInfo;
         const question = await this.questionRepository.findOne({
             where: {
                 id: questionId
@@ -61,7 +61,7 @@ export class AnswersService {
         });
         return this.answerRepository.create({
             ...draftBody,
-            consultantId: id,
+            userId: id,
             questionId,
             createdAt: new Date(),
         });
@@ -87,11 +87,11 @@ export class AnswersService {
         return { question };
     }
 
-    getDrafts(consultantInfo: Users) {
-        const { id } = consultantInfo;
+    getDrafts(userInfo: Users) {
+        const { id } = userInfo;
         return this.answerRepository.findAll({
             where: {
-                consultantId: id,
+                userId: id,
                 // If zero is returned, then the answer is a draft
                 isDraft: 0
             }

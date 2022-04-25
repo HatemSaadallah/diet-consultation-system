@@ -3,8 +3,8 @@ import { AnswerDto } from "../dto/answer.dto";
 
 export const AnswerObject = (answerBody: AnswerDto, userInfo: Users) => {
     return {
-        consultantId: userInfo.id,
-        consultantName: userInfo.username,
+        userId: userInfo.id,
+        userName: userInfo.username,
         title: answerBody.answerTitle,
         description: answerBody.answerDescription,
         recommendations: answerBody.answerRecommendations,

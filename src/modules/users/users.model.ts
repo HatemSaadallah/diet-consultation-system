@@ -1,7 +1,7 @@
 import { AutoIncrement, Column, DataType, Model, PrimaryKey, Scopes, Table } from 'sequelize-typescript';
 
 @Table({
-    tableName: 'Consultants',
+    tableName: 'Users',
     timestamps: true,
     underscored: true,
     paranoid: true,
