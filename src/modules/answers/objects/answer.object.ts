@@ -1,10 +1,10 @@
-import { Consultants } from "src/modules/consultants/consultants.model";
+import { Users } from "src/modules/users/users.model";
 import { AnswerDto } from "../dto/answer.dto";
 
-export const AnswerObject = (answerBody: AnswerDto, consultantInfo: Consultants) => {
+export const AnswerObject = (answerBody: AnswerDto, userInfo: Users) => {
     return {
-        consultantId: consultantInfo.id,
-        consultantName: consultantInfo.username,
+        consultantId: userInfo.id,
+        consultantName: userInfo.username,
         title: answerBody.answerTitle,
         description: answerBody.answerDescription,
         recommendations: answerBody.answerRecommendations,

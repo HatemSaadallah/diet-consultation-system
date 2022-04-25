@@ -1,28 +1,28 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { REPOSITORIES } from 'src/common/constants';
 import { CustomLogger } from 'src/common/logger/winston.logger';
-import { comparePassword, EXCEPTIONS, hashPassword } from 'src/common/utils';
+import { comparePassword, ERRORS, EXCEPTIONS, hashPassword } from 'src/common/utils';
 import { generateToken } from 'src/common/utils/jwt';
-import { Consultants } from './consultants.model';
-import { CreateConsultantDto } from './dto/create-consultant.dto';
-import { LoginConsultantDto } from './dto/login-consultant.dto';
-import { ConsultantInterface } from './objects/consultant.object';
+import { Users } from './users.model';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UserInterface } from './objects/consultant.object';
 
 @Injectable()
-export class ConsultantsService {
+export class UserService {
   constructor(
     @Inject(REPOSITORIES.CONSULTANT_REPOSITORY)
-    private consultantRepository: typeof Consultants,
+    private consultantRepository: typeof Users,
 
   ) { }
 
-  private readonly logger = new CustomLogger(ConsultantsService.name);
+  private readonly logger = new CustomLogger(UserService.name);
   // DONE: Create a consultant
-  async signup(createConsultantDto: CreateConsultantDto): Promise<Consultants> {
+  async signup(createConsultantDto: CreateUserDto): Promise<Users> {
     const { password, ...restData } = createConsultantDto;
-    const consultantByEmail: Consultants = await this.getConsultantByEmail(createConsultantDto.email);
-    const consultantByUsername: Consultants = await this.getConsultantByUserName(createConsultantDto.username);
-    
+    const consultantByEmail: Users = await this.getConsultantByEmail(createConsultantDto.email);
+    const consultantByUsername: Users = await this.getConsultantByUserName(createConsultantDto.username);
+
     if (consultantByEmail) {
 
       // EXCEPTIONS.USER_ALREADY_EXIST;
@@ -44,48 +44,61 @@ export class ConsultantsService {
     return this.consultantRepository.create({ ...restData, password: hashedPassword });
   }
   // DONE: Implement Login Feature
-  async login(loginInfo: LoginConsultantDto): Promise<ConsultantInterface> {
+  async login(loginInfo: LoginUserDto): Promise<UserInterface> {
+    console.log(loginInfo);
+
     if (!loginInfo.loginToken) {
       EXCEPTIONS.LOGIN_ERROR;
     }
-    let consultantFound: Consultants;
-    switch(this.emailOrUsername(loginInfo.loginToken)) {
+    let consultantFound: Users;
+    switch (this.emailOrUsername(loginInfo.loginToken)) {
       case "EMAIL":
         consultantFound = await this.getConsultantByEmail(loginInfo.loginToken);
         if (!consultantFound) {
-          EXCEPTIONS.USER_NOT_FOUND;
+          throw new HttpException(
+            {
+              status: HttpStatus.BAD_REQUEST,
+              error: ERRORS.USER_NOT_FOUND,
+            },
+            HttpStatus.BAD_REQUEST,
+          );
         }
         break;
       case "USERNAME":
         consultantFound = await this.getConsultantByUserName(loginInfo.loginToken);
         if (!consultantFound) {
-          EXCEPTIONS.USER_NOT_FOUND;
+          throw new HttpException(
+            {
+              status: HttpStatus.BAD_REQUEST,
+              error: ERRORS.USER_NOT_FOUND,
+            },
+            HttpStatus.BAD_REQUEST,
+          );
         }
     }
-    
+
     const isPasswordValid = await comparePassword(loginInfo.password, consultantFound.password);
     if (!isPasswordValid) {
       EXCEPTIONS.PASSWORD_INCORRECT;
     }
     consultantFound.password = "";
     let token: string = generateToken(consultantFound);
-    this.logger.log(`${consultantFound.username} logged in`);
-    const consultantObject: ConsultantInterface = {
-      ...consultantFound.get({plain:true}),
+    const consultantObject: UserInterface = {
+      ...consultantFound.get({ plain: true }),
       token
     };
     return consultantObject;
   }
-  async getConsultantByEmail(email: string): Promise<Consultants> {
+  async getConsultantByEmail(email: string): Promise<Users> {
     return this.consultantRepository.scope('basic').findOne({ where: { email } });
   }
-  async getConsultantByUserName(username: string): Promise<Consultants> {
+  async getConsultantByUserName(username: string): Promise<Users> {
     return this.consultantRepository.scope('basic').findOne({ where: { username } });
   }
 
   // DONE: Implement see all questions
   // DONE: Add pagination
-  findConsultantById(consultantId: number): Promise<Consultants> {
+  findConsultantById(consultantId: number): Promise<Users> {
     return this.consultantRepository.scope('basic').findOne({
       where: { id: consultantId },
     });

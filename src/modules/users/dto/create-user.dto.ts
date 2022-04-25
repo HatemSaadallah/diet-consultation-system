@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, IsNumber, IsString} from "class-validator";
 import { Is, Unique } from 'sequelize-typescript';
 import { Match } from 'src/common/decorators/match.decorator';
 
-export class CreateConsultantDto {
+export class CreateUserDto {
     
     @IsNotEmpty()
     @IsEmail()

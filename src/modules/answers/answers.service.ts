@@ -1,9 +1,8 @@
-import { CACHE_MANAGER, Inject, Injectable, } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable, } from "@nestjs/common";
 import { REPOSITORIES } from "src/common/constants";
 import { Answers } from "./answers.model";
 import { AnswerDto } from "./dto/answer.dto";
-import { Cache } from 'cache-manager';
-import { Consultants } from "../consultants/consultants.model";
+import { Users } from "../users/users.model";
 import { Questions } from "../questions/questions.model";
 
 
@@ -17,10 +16,10 @@ export class AnswersService {
         private questionRepository: typeof Questions,
 
         @Inject(REPOSITORIES.CONSULTANT_REPOSITORY)
-        private consultantRepository: typeof Consultants,
+        private consultantRepository: typeof Users,
     ) { }
     // DONE: Insert into the new table of Users
-    async answerQuestion(questionId: number, answerBody: AnswerDto, consultantInfo: Consultants): Promise<Answers> {
+    async answerQuestion(questionId: number, answerBody: AnswerDto, consultantInfo: Users): Promise<Answers> {
         const { id } = consultantInfo;
 
         // update the question
@@ -39,9 +38,21 @@ export class AnswersService {
     }
     // Create draft
     // TODO: Implement draft feature
-    async createDraft(questionId: number, consultantInfo: Consultants, draftBody: AnswerDto) {
+    async createDraft(questionId: number, consultantInfo: Users, draftBody: AnswerDto) {
         const { id } = consultantInfo;
-
+        const question = await this.questionRepository.findOne({
+            where: {
+                id: questionId
+            }
+        });
+        if (!question) {
+            throw new HttpException({
+                    status: HttpStatus.BAD_REQUEST,
+                    error: "Question not found"
+                },
+                HttpStatus.BAD_REQUEST
+            );
+        }
         // update the question
         await this.questionRepository.increment('numberOfAnswers', {
             where: {
@@ -76,7 +87,7 @@ export class AnswersService {
         return { question };
     }
 
-    getDrafts(consultantInfo: Consultants) {
+    getDrafts(consultantInfo: Users) {
         const { id } = consultantInfo;
         return this.answerRepository.findAll({
             where: {

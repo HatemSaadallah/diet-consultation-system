@@ -1,4 +1,4 @@
-export interface ConsultantInterface {
+export interface UserInterface {
     id: number;
     email: string;
     username: string;

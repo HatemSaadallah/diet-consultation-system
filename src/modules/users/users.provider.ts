@@ -1,10 +1,10 @@
-import { Consultants } from './consultants.model';
+import { Users } from './users.model';
 
 import { REPOSITORIES } from 'src/common/constants';
 
-export const ConsultantProvider = [
+export const UserProvider = [
   {
     provide: REPOSITORIES.CONSULTANT_REPOSITORY,
-    useValue: Consultants,
+    useValue: Users,
   },
 ];

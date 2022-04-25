@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-import { Consultants } from 'src/modules/consultants/consultants.model'; 
+import { Users } from 'src/modules/users/users.model'; 
 
 
 export const verifyToken: any = (token: string, secret: string) =>
@@ -11,7 +11,7 @@ export const verifyToken: any = (token: string, secret: string) =>
     return decode;
 })
 
-export const generateToken = (consultant: Consultants) => {
+export const generateToken = (consultant: Users) => {
   const token = jwt.sign({ username: consultant.username, email: consultant.email, id: consultant.id }, process.env.JWTKEY);
   return token;
 }

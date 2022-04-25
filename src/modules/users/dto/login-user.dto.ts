@@ -2,7 +2,7 @@ import { Transform, TransformFnParams } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString} from "class-validator";
 
 
-export class LoginConsultantDto {
+export class LoginUserDto {
     @IsNotEmpty()
     @IsEmail()
     @Transform(({ value }: TransformFnParams) =>

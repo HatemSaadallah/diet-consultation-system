@@ -1,8 +1,7 @@
-import { Inject, Injectable, CACHE_MANAGER} from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { REPOSITORIES } from "src/common/constants";
 import { GetQuestionsDto } from "./dto/get-questions.dto";
 import { Questions } from "./questions.model";
-import { Cache } from "cache-manager";
 // import { Consultants } from "../consultants/consultants.model";
 
 @Injectable()
@@ -11,8 +10,6 @@ export class QuestionsService {
         @Inject(REPOSITORIES.QUESTION_REPOSITORY)
         private questionRepository: typeof Questions,
 
-        @Inject(CACHE_MANAGER) 
-        private cacheManager: Cache
     ) { }
 
     getQuestions(options: GetQuestionsDto) {

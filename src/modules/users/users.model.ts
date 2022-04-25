@@ -31,7 +31,7 @@ import { AutoIncrement, Column, DataType, Model, PrimaryKey, Scopes, Table } fro
 })
 
 
-export class Consultants extends Model<Consultants> {
+export class Users extends Model<Users> {
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER)
