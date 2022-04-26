@@ -1,3 +1,3 @@
 import { Public } from './public.decorator';
-
-export { Public };
+import { Roles } from './roles.decorator';
+export { Public, Roles };
