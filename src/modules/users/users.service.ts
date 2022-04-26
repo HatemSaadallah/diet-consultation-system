@@ -45,7 +45,6 @@ export class UserService {
   }
   // DONE: Implement Login Feature
   async login(loginInfo: LoginUserDto): Promise<UserInterface> {
-    console.log(loginInfo);
 
     if (!loginInfo.loginToken) {
       EXCEPTIONS.LOGIN_ERROR;

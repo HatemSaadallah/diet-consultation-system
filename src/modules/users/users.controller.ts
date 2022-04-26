@@ -43,6 +43,7 @@ export class UserController {
 
   @Post('create-draft/:id')
   createDraft(@Param('id') id, @UserInfo() userInfo: Users, @Body() draftBody: AnswerDto) {
+    
     return this.answerService.createDraft(+id, userInfo, draftBody);
   }
 
@@ -61,7 +62,6 @@ export class UserController {
     
     return this.answerService.getDrafts(userInfo);
   }
-
 
   @Delete('answer/:id')
   remove(@Param('id') id: string) {

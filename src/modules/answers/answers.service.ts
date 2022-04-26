@@ -30,7 +30,7 @@ export class AnswersService {
         });
         return this.answerRepository.create({
             ...answerBody,
-            
+
             createdBy: id,
             isDraft: new Date(),
             questionId,
@@ -40,6 +40,7 @@ export class AnswersService {
     // Create draft
     // TODO: Implement draft feature
     async createDraft(questionId: number, userInfo: Users, draftBody: AnswerDto) {
+        
         const { id } = userInfo;
         const question = await this.questionRepository.findOne({
             where: {
@@ -48,25 +49,62 @@ export class AnswersService {
         });
         if (!question) {
             throw new HttpException({
-                    status: HttpStatus.BAD_REQUEST,
-                    error: "Question not found"
-                },
-                HttpStatus.BAD_REQUEST
+                status: HttpStatus.BAD_REQUEST,
+                error: "Question not found"
+            },
+            HttpStatus.BAD_REQUEST
             );
         }
-        // update the question
-        await this.questionRepository.increment('numberOfAnswers', {
-            where: {
-                id: questionId
-            }
-        });
-        return this.answerRepository.create({
+        
+        // Check of draft exists
+        const draft = await this.getDraftByUserIdAndQuestionId(userInfo.id, questionId);
+        
+        if (draft) {
+            // Update draft
+            await this.answerRepository.update({
+                ...draftBody,
+                createdBy: id,
+                questionId,
+                createdAt: new Date(),
+            }, {
+                where: {
+                    id: draft.id
+                }
+            });
+        } else {
+            // update the question
+            await this.questionRepository.increment('numberOfAnswers', {
+                where: {
+                    id: questionId
+                }
+            });
+            return this.answerRepository.create({
+                ...draftBody,
+                createdBy: id,
+                questionId,
+                createdAt: new Date(),
+            });
+        }
+        return {
+            message: "Draft updated",
             ...draftBody,
             createdBy: id,
             questionId,
             createdAt: new Date(),
+        }
+    }
+
+    // TODO: Get Draft By Username, questionId
+    getDraftByUserIdAndQuestionId(userId: number, questionId: number) {
+        return this.answerRepository.findOne({
+            where: {
+                createdBy: userId,
+                questionId,
+                isDraft: 0
+            }
         });
     }
+
 
     // DONE: return question info with answers
     async getAnswersForQuestion(id: number) {

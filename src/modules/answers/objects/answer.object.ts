@@ -5,9 +5,9 @@ export const AnswerObject = (answerBody: AnswerDto, userInfo: Users) => {
     return {
         userId: userInfo.id,
         userName: userInfo.username,
-        title: answerBody.answerTitle,
-        description: answerBody.answerDescription,
-        recommendations: answerBody.answerRecommendations,
+        title: answerBody.title,
+        description: answerBody.description,
+        recommendations: answerBody.recommendations,
         createdAt: new Date(),
         updatedAt: new Date(),
     };

@@ -27,7 +27,6 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     
     const { token } = request.headers;
-    // console.log(token);
     if (!token) {
       return false;
     }
@@ -37,7 +36,6 @@ export class AuthGuard implements CanActivate {
       const data = verifyToken(token, this.configService.get('JWTKEY'));
       
       const user = await this.userService.findUserById(data.id);
-      console.log(user.get({ plain: true }) );
       
       request.user = user.get({ plain: true });
       request.user.userId = user.id;
