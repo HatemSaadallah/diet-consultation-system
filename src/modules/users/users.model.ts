@@ -55,6 +55,9 @@ export class Users extends Model<Users> {
     @Column(DataType.STRING)
     lastName: string;
 
+    @Column(DataType.STRING)
+    role: string;
+    
     @Column(DataType.DATE)
     createdAt: Date;
 

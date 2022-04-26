@@ -103,7 +103,6 @@ export class UserService {
     });
   }
 
-  // TODO: return all user info
   findAll() {
     return `This action returns all users`;
   }

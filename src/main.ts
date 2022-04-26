@@ -4,6 +4,8 @@ import { AppModule } from './app.module';
 import { AuthGuard } from './common/guards/auth.guard';
 import { CustomLogger } from './common/logger/winston.logger';
 import { UserService } from './modules/users/users.service';
+import { RolesGuard } from './common/guards/roles.guard';
+
 declare const module: any;
 
 async function bootstrap() {
@@ -13,7 +15,7 @@ async function bootstrap() {
   const userService = app.get(UserService);
 
   const configService = app.get(ConfigService);
-  app.useGlobalGuards(new AuthGuard(new ConfigService(), new Reflector(), userService));
+  app.useGlobalGuards(new AuthGuard(new ConfigService(), new Reflector(), userService), new RolesGuard(new Reflector()));
 
   await app.listen(configService.get('PORT'));
   

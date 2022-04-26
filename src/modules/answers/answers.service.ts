@@ -38,7 +38,7 @@ export class AnswersService {
         });
     }
     // Create draft
-    // TODO: Implement draft feature
+    // DONE: Implement draft feature
     async createDraft(questionId: number, userInfo: Users, draftBody: AnswerDto) {
         
         const { id } = userInfo;
@@ -94,7 +94,7 @@ export class AnswersService {
         }
     }
 
-    // TODO: Get Draft By Username, questionId
+    // DONE: Get Draft By Username, questionId
     getDraftByUserIdAndQuestionId(userId: number, questionId: number) {
         return this.answerRepository.findOne({
             where: {
