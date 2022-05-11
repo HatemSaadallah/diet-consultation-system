@@ -29,7 +29,6 @@ import {
           'updatedBy',
           'createdBy',
           'deletedAt',
-          'password',
         ],
       },
     },
@@ -73,4 +72,10 @@ export class Users extends Model<Users> {
 
   @Column(DataType.STRING)
   updatedBy: number;
+
+  @Column(DataType.DATE)
+  deletedAt: Date;
+
+  @Column(DataType.INTEGER)
+  deletedBy: number;
 }

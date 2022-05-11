@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { REPOSITORIES } from 'src/common/constants';
 import { CustomLogger } from 'src/common/logger/winston.logger';
 import { UserInterface } from 'src/common/objects/user.object';
@@ -9,10 +15,10 @@ import {
   hashPassword,
 } from 'src/common/utils';
 import { generateToken } from 'src/common/utils/jwt';
+import { Users } from '../users/users.model';
 import { UserService } from '../users/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { Users } from './users.model';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +27,7 @@ export class AuthService {
     private userService: UserService,
   ) {}
 
-  private readonly logger = new CustomLogger(AuthService.name);
+  private readonly logger = new Logger(AuthService.name);
   // DONE: Create a user
   async signup(createUserDto: CreateUserDto): Promise<Users> {
     const { password, ...restData } = createUserDto;
@@ -46,7 +52,7 @@ export class AuthService {
     }
     const hashedPassword = await hashPassword(password);
 
-    return this.userRepository.create({
+    return this.userService.create({
       ...restData,
       password: hashedPassword,
     });
@@ -60,6 +66,7 @@ export class AuthService {
     switch (this.emailOrUsername(loginInfo.loginToken)) {
       case 'EMAIL':
         userFound = await this.userService.getUserByEmail(loginInfo.loginToken);
+
         if (!userFound) {
           throw new HttpException(
             {
@@ -74,6 +81,7 @@ export class AuthService {
         userFound = await this.userService.getUserByUserName(
           loginInfo.loginToken,
         );
+
         if (!userFound) {
           throw new HttpException(
             {
@@ -87,18 +95,26 @@ export class AuthService {
       default:
         '';
     }
-
     const isPasswordValid = await comparePassword(
       loginInfo.password,
       userFound.password,
     );
+    console.log(isPasswordValid);
+
     if (!isPasswordValid) {
-      EXCEPTIONS.PASSWORD_INCORRECT;
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: ERRORS.PASSWORD_INCORRECT,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    // userFound.password = '';
+    userFound = userFound.get({ plain: true });
+    delete userFound.password;
     const token: string = generateToken(userFound);
     const userObject: UserInterface = {
-      ...userFound.get({ plain: true }),
+      ...userFound,
       token,
     };
     return userObject;

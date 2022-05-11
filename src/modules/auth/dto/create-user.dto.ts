@@ -1,14 +1,12 @@
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { Is, Unique } from 'sequelize-typescript';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Match } from 'src/common/decorators/match.decorator';
+import { trimmer } from 'src/common/validators/trim.transform';
 
 export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()
-  @Transform(({ value }: TransformFnParams) =>
-    typeof value === 'string' ? value.trim().toLowerCase() : value,
-  )
+  @Transform(trimmer)
   email: string;
 
   @IsNotEmpty()
@@ -30,9 +28,5 @@ export class CreateUserDto {
   lastName: string;
 
   @IsNotEmpty()
-  @Match('^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$', {
-    message:
-      'Password must be at least 8 characters, contain at least one uppercase letter, one lowercase letter, one number and one special character',
-  })
   password: string;
 }

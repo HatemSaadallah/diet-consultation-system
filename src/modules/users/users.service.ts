@@ -1,7 +1,7 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { REPOSITORIES } from 'src/common/constants';
 import { CustomLogger } from 'src/common/logger/winston.logger';
-import { hashPassword } from 'src/common/utils';
+import { UserInterface } from 'src/common/objects/user.object';
 import { Users } from './users.model';
 
 @Injectable()
@@ -13,11 +13,15 @@ export class UserService {
 
   private readonly logger = new CustomLogger(UserService.name);
 
-  async getUserByEmail(email: string): Promise<Users> {
+  getUserByEmail(email: string): Promise<Users> {
     return this.userRepository.scope('basic').findOne({ where: { email } });
   }
-  async getUserByUserName(username: string): Promise<Users> {
+  getUserByUserName(username: string): Promise<Users> {
     return this.userRepository.scope('basic').findOne({ where: { username } });
+  }
+
+  create(user: any): Promise<Users> {
+    return this.userRepository.create(user);
   }
 
   // DONE: Implement see all questions

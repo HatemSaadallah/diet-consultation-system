@@ -16,7 +16,7 @@ export class AuthController {
   }
   @Public()
   @Post('login')
-  async login(@Body() loginInfo: LoginUserDto): Promise<UserInterface> {
+  login(@Body() loginInfo: LoginUserDto): Promise<UserInterface> {
     return this.authService.login(loginInfo);
   }
 }

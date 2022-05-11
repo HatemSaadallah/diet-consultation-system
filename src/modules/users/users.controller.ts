@@ -29,7 +29,7 @@ export class UserController {
   ) {}
 
   @Get('questions')
-  async getQuestions(@Body() options: GetQuestionsDto) {
+  getQuestions(@Body() options: GetQuestionsDto) {
     return this.questionsService.getQuestions(options);
   }
 
