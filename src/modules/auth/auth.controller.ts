@@ -11,7 +11,7 @@ export class AuthController {
 
   @Public()
   @Post('signup')
-  create(@Body() createUserDto: CreateUserDto): any {
+  create(@Body() createUserDto: CreateUserDto): Promise<CreateUserDto> {
     return this.authService.signup(createUserDto);
   }
   @Public()

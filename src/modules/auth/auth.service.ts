@@ -1,11 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
-import { REPOSITORIES } from 'src/common/constants';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CustomLogger } from 'src/common/logger/winston.logger';
 import { UserInterface } from 'src/common/objects/user.object';
 import {
@@ -25,11 +18,16 @@ export class AuthService {
   constructor(
     @Inject(UserService)
     private userService: UserService,
-  ) {}
 
-  private readonly logger = new Logger(AuthService.name);
+    private readonly logger: CustomLogger,
+  ) {
+    this.logger = new CustomLogger('AuthService');
+    this.logger.info('AuthService created');
+  }
+
   // DONE: Create a user
   async signup(createUserDto: CreateUserDto): Promise<Users> {
+    this.logger.log('Signup Called');
     const { password, ...restData } = createUserDto;
     const userByEmail: Users = await this.userService.getUserByEmail(
       createUserDto.email,
@@ -39,19 +37,24 @@ export class AuthService {
     );
 
     if (userByEmail) {
+      this.logger.warn(`User with email ${createUserDto.email} already exist`);
       throw new HttpException(
         `User with email ${createUserDto.email} already exist`,
         HttpStatus.BAD_REQUEST,
       );
     }
     if (userByUsername) {
+      this.logger.warn(
+        `User with username ${createUserDto.username} already exist`,
+      );
+
       throw new HttpException(
         `User with username ${createUserDto.username} already exist`,
         HttpStatus.BAD_REQUEST,
       );
     }
     const hashedPassword = await hashPassword(password);
-
+    this.logger.log(`User with email ${createUserDto.email} created`);
     return this.userService.create({
       ...restData,
       password: hashedPassword,

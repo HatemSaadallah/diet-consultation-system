@@ -1,10 +1,19 @@
 import { ConsoleLogger } from '@nestjs/common';
-import * as winston from 'winston';
+const winston = require('winston');
+const { combine, timestamp, printf, colorize, align } = winston.format;
 
 const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: combine(
+    colorize({ all: true }),
+    timestamp({
+      format: 'YYYY-MM-DD hh:mm:ss.SSS A',
+    }),
+    align(),
+    printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`),
+  ),
   transports: [new winston.transports.Console()],
 });
-
 export class CustomLogger extends ConsoleLogger {
   debug(message: string) {
     super.error(message);
@@ -17,12 +26,14 @@ export class CustomLogger extends ConsoleLogger {
   }
 
   log(message: string) {
-    super.log(message);
+    logger.info(message);
+  }
+
+  info(message: string) {
     logger.info(message);
   }
 
   warn(message: string) {
-    super.warn(message);
     logger.warn(message);
   }
 }

@@ -13,6 +13,7 @@ export const databaseProvider = [
     useFactory: (configService: ConfigService) => {
       const sequelize = new Sequelize({
         ...configService.get(DATABASE_CONFIG),
+        logging: false,
       });
       sequelize.addModels([Users, Questions, Answers]);
       return sequelize;
