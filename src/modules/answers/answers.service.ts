@@ -5,6 +5,7 @@ import { AnswerDto } from './dto/answer.dto';
 import { Users } from '../users/users.model';
 import { Questions } from '../questions/questions.model';
 import { QuestionsService } from '../questions/questions.service';
+import { CustomLogger } from 'src/common/logger/winston.logger';
 
 @Injectable()
 export class AnswersService {
@@ -17,6 +18,8 @@ export class AnswersService {
 
     @Inject(QuestionsService)
     private questionsService: QuestionsService,
+
+    private logger: CustomLogger,
   ) {}
   // DONE: Insert into the new table of Users
   async answerQuestion(
@@ -40,9 +43,11 @@ export class AnswersService {
   // Create draft
   // DONE: Implement draft feature
   async createDraft(questionId: number, userInfo: Users, draftBody: AnswerDto) {
+    this.logger.log(`Attempting to create draft for question ${questionId}`);
     const { id } = userInfo;
     const question = await this.questionsService.getQuestionById(questionId);
     if (!question) {
+      this.logger.error(`Question with id ${questionId} not found`);
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
@@ -105,6 +110,7 @@ export class AnswersService {
 
   // DONE: return question info with answers
   async getAnswersForQuestion(id: number) {
+    this.logger.log(`Attempting to get answers for question ${id}`);
     this.questionRepository.hasMany(this.answerRepository, {
       foreignKey: 'questionId',
     });
@@ -127,11 +133,11 @@ export class AnswersService {
   }
 
   getDrafts(userInfo: Users) {
+    this.logger.log(`Attempting to get drafts for user ${userInfo.id}`);
     const { id } = userInfo;
     return this.answerRepository.findAll({
       where: {
         createdBy: id,
-        // If zero is returned, then the answer is a draft
         isDraft: 0,
       },
     });

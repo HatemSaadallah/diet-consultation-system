@@ -3,7 +3,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { faker } = require('@faker-js/faker');
 
-const questions = [...Array(100)].map((question) => ({
+const questions = [...Array(100)].map(() => ({
   person_name: faker.name.firstName(),
   title: faker.lorem.sentence(),
   description: faker.lorem.paragraph(),
@@ -17,10 +17,10 @@ const questions = [...Array(100)].map((question) => ({
 }));
 
 module.exports = {
-  up(queryInterface, Sequelize) {
+  up(queryInterface) {
     return queryInterface.bulkInsert('Questions', questions, {});
   },
-  down(queryInterface, Sequelize) {
+  down(queryInterface) {
     return queryInterface.bulkDelete('Questions', null, {});
   },
 };

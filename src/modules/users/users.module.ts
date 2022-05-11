@@ -7,6 +7,7 @@ import { AnswersProvider } from '../answers/answers.provider';
 
 import { QuestionsService } from '../questions/questions.service';
 import { AnswersService } from '../answers/answers.service';
+import { CustomLogger } from 'src/common/logger/winston.logger';
 @Module({
   imports: [],
   controllers: [UserController],
@@ -14,6 +15,7 @@ import { AnswersService } from '../answers/answers.service';
     UserService,
     QuestionsService,
     AnswersService,
+    CustomLogger,
     ...UserProvider,
     ...QuestionsProvider,
     ...AnswersProvider,
