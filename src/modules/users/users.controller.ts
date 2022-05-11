@@ -11,9 +11,9 @@ import {
 import { Public, Roles } from 'src/common/decorators';
 import { Users } from './users.model';
 import { UserService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
-import { UserInterface } from './objects/user.object';
+import { CreateUserDto } from '../auth/dto/create-user.dto';
+import { LoginUserDto } from '../auth/dto/login-user.dto';
+import { UserInterface } from '../../common/objects/user.object';
 import { QuestionsService } from '../questions/questions.service';
 import { GetQuestionsDto } from '../questions/dto/get-questions.dto';
 import { AnswerDto } from '../answers/dto/answer.dto';
@@ -27,17 +27,6 @@ export class UserController {
     private readonly questionsService: QuestionsService,
     private readonly answerService: AnswersService,
   ) {}
-
-  @Public()
-  @Post('signup')
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.signup(createUserDto);
-  }
-  @Public()
-  @Post('login')
-  async login(@Body() loginInfo: LoginUserDto): Promise<UserInterface> {
-    return this.userService.login(loginInfo);
-  }
 
   @Get('questions')
   async getQuestions(@Body() options: GetQuestionsDto) {

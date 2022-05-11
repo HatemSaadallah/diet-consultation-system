@@ -18,5 +18,6 @@ import { AnswersService } from '../answers/answers.service';
     ...QuestionsProvider,
     ...AnswersProvider,
   ],
+  exports: [UserService],
 })
 export class UsersModule {}
