@@ -6,11 +6,11 @@ module.exports = {
     return queryInterface.addConstraint('Answers', {
       type: 'unique',
       name: 'unique_answer',
-      fields: ['consultant_id', 'is_draft', 'question_id']
+      fields: ['consultant_id', 'is_draft', 'question_id'],
     });
   },
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.removeConstraint('Answers', 'unique_answer');
-  }
+  },
 };

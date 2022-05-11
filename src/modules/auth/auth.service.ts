@@ -99,7 +99,6 @@ export class AuthService {
       loginInfo.password,
       userFound.password,
     );
-    console.log(isPasswordValid);
 
     if (!isPasswordValid) {
       throw new HttpException(
