@@ -31,4 +31,12 @@ export class QuestionsService {
       },
     });
   }
+
+  incrementNumberOfAnswers(questionId: number) {
+    return this.questionRepository.increment('numberOfAnswers', {
+      where: {
+        id: questionId,
+      },
+    });
+  }
 }

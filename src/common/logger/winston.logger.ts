@@ -1,4 +1,5 @@
 import { ConsoleLogger } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const winston = require('winston');
 const { combine, timestamp, printf, colorize, align } = winston.format;
 

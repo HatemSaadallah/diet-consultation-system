@@ -4,19 +4,19 @@ import { Answers } from './answers.model';
 import { AnswerDto } from './dto/answer.dto';
 import { Users } from '../users/users.model';
 import { Questions } from '../questions/questions.model';
+import { QuestionsService } from '../questions/questions.service';
 
 @Injectable()
 export class AnswersService {
   constructor(
     @Inject(REPOSITORIES.ANSWER_REPOSITORY)
     private answerRepository: typeof Answers,
-    // private readonly answerService: AnswersService,
 
     @Inject(REPOSITORIES.QUESTION_REPOSITORY)
     private questionRepository: typeof Questions,
 
-    @Inject(REPOSITORIES.USER_REPOSITORY)
-    private userRepository: typeof Users,
+    @Inject(QuestionsService)
+    private questionsService: QuestionsService,
   ) {}
   // DONE: Insert into the new table of Users
   async answerQuestion(
@@ -27,11 +27,7 @@ export class AnswersService {
     const { id } = userInfo;
 
     // update the question
-    await this.questionRepository.increment('numberOfAnswers', {
-      where: {
-        id: questionId,
-      },
-    });
+    await this.questionsService.incrementNumberOfAnswers(questionId);
     return this.answerRepository.create({
       ...answerBody,
 
@@ -45,11 +41,7 @@ export class AnswersService {
   // DONE: Implement draft feature
   async createDraft(questionId: number, userInfo: Users, draftBody: AnswerDto) {
     const { id } = userInfo;
-    const question = await this.questionRepository.findOne({
-      where: {
-        id: questionId,
-      },
-    });
+    const question = await this.questionsService.getQuestionById(questionId);
     if (!question) {
       throw new HttpException(
         {
@@ -83,11 +75,7 @@ export class AnswersService {
       );
     } else {
       // update the question
-      await this.questionRepository.increment('numberOfAnswers', {
-        where: {
-          id: questionId,
-        },
-      });
+      this.questionsService.incrementNumberOfAnswers(questionId);
       return this.answerRepository.create({
         ...draftBody,
         createdBy: id,
