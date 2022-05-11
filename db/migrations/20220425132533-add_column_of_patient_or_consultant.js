@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     // Create enum wether in User Table wether patient or consultant
-    
+
     return queryInterface.addColumn('Users', 'role', {
       type: Sequelize.ENUM,
       values: ['patient', 'consultant'],
@@ -13,5 +13,5 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.removeColumn('Users', 'role');
-  }
+  },
 };

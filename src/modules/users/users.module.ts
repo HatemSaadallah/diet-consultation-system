@@ -8,7 +8,15 @@ import { AnswersProvider } from '../answers/answers.provider';
 import { QuestionsService } from '../questions/questions.service';
 import { AnswersService } from '../answers/answers.service';
 @Module({
-  controllers: [ UserController ],
-  providers: [UserService, QuestionsService, AnswersService, ...UserProvider, ...QuestionsProvider, ...AnswersProvider],
+  imports: [],
+  controllers: [UserController],
+  providers: [
+    UserService,
+    QuestionsService,
+    AnswersService,
+    ...UserProvider,
+    ...QuestionsProvider,
+    ...AnswersProvider,
+  ],
 })
 export class UsersModule {}

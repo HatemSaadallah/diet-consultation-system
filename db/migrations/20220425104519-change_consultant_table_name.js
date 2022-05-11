@@ -9,5 +9,5 @@ module.exports = {
   down: (queryInterface, Sequelize) => {
     // Change Table Name
     return queryInterface.renameTable('Users', 'Consultants');
-  }
+  },
 };

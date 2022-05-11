@@ -1,7 +1,12 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { REPOSITORIES } from 'src/common/constants';
 import { CustomLogger } from 'src/common/logger/winston.logger';
-import { comparePassword, ERRORS, EXCEPTIONS, hashPassword } from 'src/common/utils';
+import {
+  comparePassword,
+  ERRORS,
+  EXCEPTIONS,
+  hashPassword,
+} from 'src/common/utils';
 import { generateToken } from 'src/common/utils/jwt';
 import { Users } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,24 +18,23 @@ export class UserService {
   constructor(
     @Inject(REPOSITORIES.USER_REPOSITORY)
     private userRepository: typeof Users,
-
-  ) { }
+  ) {}
 
   private readonly logger = new CustomLogger(UserService.name);
   // DONE: Create a user
   async signup(createUserDto: CreateUserDto): Promise<Users> {
     const { password, ...restData } = createUserDto;
     const userByEmail: Users = await this.getUserByEmail(createUserDto.email);
-    const userByUsername: Users = await this.getUserByUserName(createUserDto.username);
+    const userByUsername: Users = await this.getUserByUserName(
+      createUserDto.username,
+    );
 
     if (userByEmail) {
-
       // EXCEPTIONS.USER_ALREADY_EXIST;
       throw new HttpException(
         `User with email ${createUserDto.email} already exist`,
         HttpStatus.BAD_REQUEST,
       );
-
     }
     if (userByUsername) {
       // EXCEPTIONS.USER_ALREADY_EXIST;
@@ -41,17 +45,19 @@ export class UserService {
     }
     const hashedPassword = await hashPassword(password);
 
-    return this.userRepository.create({ ...restData, password: hashedPassword });
+    return this.userRepository.create({
+      ...restData,
+      password: hashedPassword,
+    });
   }
   // DONE: Implement Login Feature
   async login(loginInfo: LoginUserDto): Promise<UserInterface> {
-
     if (!loginInfo.loginToken) {
       EXCEPTIONS.LOGIN_ERROR;
     }
     let userFound: Users;
     switch (this.emailOrUsername(loginInfo.loginToken)) {
-      case "EMAIL":
+      case 'EMAIL':
         userFound = await this.getUserByEmail(loginInfo.loginToken);
         if (!userFound) {
           throw new HttpException(
@@ -63,7 +69,7 @@ export class UserService {
           );
         }
         break;
-      case "USERNAME":
+      case 'USERNAME':
         userFound = await this.getUserByUserName(loginInfo.loginToken);
         if (!userFound) {
           throw new HttpException(
@@ -74,17 +80,23 @@ export class UserService {
             HttpStatus.BAD_REQUEST,
           );
         }
+        break;
+      default:
+        '';
     }
 
-    const isPasswordValid = await comparePassword(loginInfo.password, userFound.password);
+    const isPasswordValid = await comparePassword(
+      loginInfo.password,
+      userFound.password,
+    );
     if (!isPasswordValid) {
       EXCEPTIONS.PASSWORD_INCORRECT;
     }
-    userFound.password = "";
-    let token: string = generateToken(userFound);
+    // userFound.password = '';
+    const token: string = generateToken(userFound);
     const userObject: UserInterface = {
       ...userFound.get({ plain: true }),
-      token
+      token,
     };
     return userObject;
   }
@@ -113,9 +125,8 @@ export class UserService {
   // DONE: Check if Input is email or username
   private emailOrUsername(input: string): string {
     if (input.includes('@')) {
-      return "EMAIL";
-    } else {
-      return "USERNAME";
+      return 'EMAIL';
     }
+    return 'USERNAME';
   }
 }

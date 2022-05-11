@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Logger,
+} from '@nestjs/common';
 import { Public, Roles } from 'src/common/decorators';
 import { Users } from './users.model';
 import { UserService } from './users.service';
@@ -17,12 +26,11 @@ export class UserController {
     private readonly userService: UserService,
     private readonly questionsService: QuestionsService,
     private readonly answerService: AnswersService,
-  ) { }
+  ) {}
 
   @Public()
   @Post('signup')
   create(@Body() createUserDto: CreateUserDto) {
-    
     return this.userService.signup(createUserDto);
   }
   @Public()
@@ -38,15 +46,21 @@ export class UserController {
 
   @Post('answer/:id')
   @Roles('consultant')
-  answerQuestion(@UserInfo() userInfo: Users, @Param('id') id: string, @Body() answerBody: AnswerDto) {
-   
+  answerQuestion(
+    @UserInfo() userInfo: Users,
+    @Param('id') id: string,
+    @Body() answerBody: AnswerDto,
+  ) {
     return this.answerService.answerQuestion(+id, answerBody, userInfo);
   }
 
   @Roles('consultant')
   @Post('create-draft/:id')
-  createDraft(@Param('id') id, @UserInfo() userInfo: Users, @Body() draftBody: AnswerDto) {
-    
+  createDraft(
+    @Param('id') id,
+    @UserInfo() userInfo: Users,
+    @Body() draftBody: AnswerDto,
+  ) {
     return this.answerService.createDraft(+id, userInfo, draftBody);
   }
 
@@ -59,10 +73,9 @@ export class UserController {
   @Get('/drafts')
   @Roles('consultant')
   getDrafts(@UserInfo() userInfo: Users) {
-    
     return this.answerService.getDrafts(userInfo);
   }
-  
+
   @Roles('consultant')
   @Delete('answer/:id')
   remove(@Param('id') id: string) {

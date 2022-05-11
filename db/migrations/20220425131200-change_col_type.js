@@ -2,17 +2,19 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    // Change col data type
-    return queryInterface.changeColumn('Answers', 'created_by', {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    });
-  },
-
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.changeColumn('Answers', 'created_by', {
+    // create column in answers
+    return queryInterface.addColumn('Answers', 'created_by', {
       type: Sequelize.INTEGER,
       allowNull: true,
+      references: {
+        model: 'Users',
+        key: 'id',
+      },
     });
-  }
+
+    down: (queryInterface, Sequelize) => {
+      // remove column in answers
+      return queryInterface.removeColumn('Answers', 'created_by');
+    };
+  },
 };

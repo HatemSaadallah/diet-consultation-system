@@ -7,7 +7,6 @@ module.exports = {
       type: Sequelize.INTEGER,
       allowNull: true,
     });
-
   },
 
   down: (queryInterface, Sequelize) => {
@@ -16,5 +15,5 @@ module.exports = {
       type: Sequelize.INTEGER,
       allowNull: false,
     });
-  }
+  },
 };

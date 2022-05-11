@@ -7,15 +7,16 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       }),
-      queryInterface.changeColumn('Answers', 'updated_by', {
+      // create column in answers
+      queryInterface.addColumn('Answers', 'updated_by', {
         type: Sequelize.INTEGER,
         allowNull: false,
       }),
-      queryInterface.changeColumn('Answers', 'deleted_by', {
+      queryInterface.addColumn('Answers', 'deleted_by', {
         type: Sequelize.INTEGER,
         allowNull: false,
       }),
-    ])
+    ]);
   },
 
   down: (queryInterface, Sequelize) => {
@@ -24,14 +25,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       }),
-      queryInterface.changeColumn('Answers', 'updated_by', {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      }),
-      queryInterface.changeColumn('Answers', 'deleted_by', {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      }),
-    ])
-  }
+      queryInterface.removeColumn('Answers', 'updated_by'),
+      queryInterface.removeColumn('Answers', 'deleted_by'),
+    ]);
+  },
 };

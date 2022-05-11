@@ -7,7 +7,6 @@ import { Answers } from '../answers/answers.model';
 import { Users } from '../users/users.model';
 import { Questions } from '../questions/questions.model';
 
-
 export const databaseProvider = [
   {
     provide: PROVIDERS.DATABASE_PROVIDER,

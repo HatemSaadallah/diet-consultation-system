@@ -15,10 +15,13 @@ async function bootstrap() {
   const userService = app.get(UserService);
 
   const configService = app.get(ConfigService);
-  app.useGlobalGuards(new AuthGuard(new ConfigService(), new Reflector(), userService), new RolesGuard(new Reflector()));
+  app.useGlobalGuards(
+    new AuthGuard(new ConfigService(), new Reflector(), userService),
+    new RolesGuard(new Reflector()),
+  );
 
   await app.listen(configService.get('PORT'));
-  
+
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());

@@ -15,7 +15,7 @@ import { CustomLogger } from './common/logger/winston.logger';
     }),
   ],
   controllers: [],
-  providers: [ CustomLogger ],
-  exports: [ CustomLogger ],
+  providers: [CustomLogger],
+  exports: [CustomLogger],
 })
 export class AppModule {}
