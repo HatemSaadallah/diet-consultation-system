@@ -34,9 +34,18 @@ export class Questions extends Model<Questions> {
   @Column(DataType.DATE)
   createdAt: Date;
 
+  @Column(DataType.INTEGER)
+  createdBy: number;
+
   @Column(DataType.DATE)
   updatedAt: Date;
 
+  @Column(DataType.INTEGER)
+  updatedBy: number;
+
   @Column(DataType.DATE)
   deletedAt: Date;
+
+  @Column(DataType.INTEGER)
+  deletedBy: number;
 }

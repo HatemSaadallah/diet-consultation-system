@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REPOSITORIES } from 'src/common/constants';
+import { Users } from '../users/users.model';
+import { CreateQuestionDto } from './dto/create-question.dto';
 import { GetQuestionsDto } from './dto/get-questions.dto';
 import { Questions } from './questions.model';
 
@@ -10,6 +12,12 @@ export class QuestionsService {
     private questionRepository: typeof Questions,
   ) {}
 
+  createQuestion(question: CreateQuestionDto, userInfo: Users) {
+    return this.questionRepository.create({
+      ...question,
+      createdBy: userInfo.id,
+    });
+  }
   getQuestions(options: GetQuestionsDto) {
     let { size, page } = options;
     size = size || 5;

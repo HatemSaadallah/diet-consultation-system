@@ -1,6 +1,5 @@
 import { Transform, TransformFnParams } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { Match } from 'src/common/decorators/match.decorator';
 import { trimmer } from 'src/common/validators/trim.transform';
 
 export class CreateUserDto {

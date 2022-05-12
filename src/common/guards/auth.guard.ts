@@ -7,10 +7,8 @@ import {
 } from '@nestjs/common';
 import { verifyToken } from '../utils/jwt';
 import { Reflector } from '@nestjs/core';
-import { Users } from 'src/modules/users/users.model';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/modules/users/users.service';
-import { EXCEPTIONS } from '../utils';
 @Injectable()
 export class AuthGuard implements CanActivate {
   private logger = new Logger('AuthGuard');

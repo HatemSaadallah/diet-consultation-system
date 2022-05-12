@@ -5,15 +5,14 @@ import { UserProvider } from './users.provider';
 import { QuestionsProvider } from '../questions/questions.provider';
 import { AnswersProvider } from '../answers/answers.provider';
 
-import { QuestionsService } from '../questions/questions.service';
 import { AnswersService } from '../answers/answers.service';
 import { CustomLogger } from 'src/common/logger/winston.logger';
+import { QuestionsModule } from '../questions/questions.module';
 @Module({
-  imports: [],
+  imports: [QuestionsModule],
   controllers: [UserController],
   providers: [
     UserService,
-    QuestionsService,
     AnswersService,
     CustomLogger,
     ...UserProvider,

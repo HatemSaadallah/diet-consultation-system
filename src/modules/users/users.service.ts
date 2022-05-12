@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REPOSITORIES } from 'src/common/constants';
 import { CustomLogger } from 'src/common/logger/winston.logger';
-import { UserInterface } from 'src/common/objects/user.object';
 import { Users } from './users.model';
 
 @Injectable()

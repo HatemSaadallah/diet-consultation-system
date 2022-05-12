@@ -99,6 +99,9 @@ export class AnswersService {
 
   // DONE: Get Draft By Username, questionId
   getDraftByUserIdAndQuestionId(userId: number, questionId: number) {
+    this.logger.log(
+      `Attempting to get draft for user ${userId} and question ${questionId}`,
+    );
     return this.answerRepository.findOne({
       where: {
         createdBy: userId,
