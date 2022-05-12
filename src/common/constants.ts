@@ -9,4 +9,8 @@ export const REPOSITORIES = {
   ANSWER_REPOSITORY: 'ANSWER_REPOSITORY',
 };
 
+export enum ROLES_TYPES {
+  PUBLIC = 'public',
+}
+
 export const winstonProvider = 'NestWinston';

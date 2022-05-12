@@ -18,7 +18,7 @@ export class QuestionsService {
       createdBy: userInfo.id,
     });
   }
-  getQuestions(options: GetQuestionsDto) {
+  getQuestions(options: GetQuestionsDto): Promise<Questions[]> {
     let { size, page } = options;
     size = size || 5;
     page = page || 1;
@@ -32,6 +32,7 @@ export class QuestionsService {
       offset: (page - 1) * size,
     });
   }
+
   getQuestionById(id: number) {
     return this.questionRepository.findOne({
       where: {

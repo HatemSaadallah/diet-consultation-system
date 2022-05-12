@@ -54,18 +54,18 @@ export class Answers extends Model<Answers> {
   createdAt: Date;
 
   // make not null
-  @Column(DataType.STRING)
+  @Column(DataType.INTEGER)
   createdBy: number;
 
   @Column(DataType.DATE)
   updatedAt: Date;
 
-  @Column(DataType.STRING)
-  updatedBy: string;
+  @Column(DataType.INTEGER)
+  updatedBy: number;
 
   @Column(DataType.DATE)
   deletedAt: Date;
 
-  @Column(DataType.STRING)
-  deletedBy: string;
+  @Column(DataType.INTEGER)
+  deletedBy: number;
 }

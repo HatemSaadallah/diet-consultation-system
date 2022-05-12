@@ -20,9 +20,6 @@ export class Questions extends Model<Questions> {
   id: number;
 
   @Column(DataType.STRING)
-  personName: string;
-
-  @Column(DataType.STRING)
   title: string;
 
   @Column(DataType.STRING)

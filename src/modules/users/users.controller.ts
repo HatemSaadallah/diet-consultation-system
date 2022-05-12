@@ -1,37 +1,17 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Logger,
-} from '@nestjs/common';
-import { Public, Roles } from 'src/common/decorators';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { Users } from './users.model';
 import { UserService } from './users.service';
-import { CreateUserDto } from '../auth/dto/create-user.dto';
-import { LoginUserDto } from '../auth/dto/login-user.dto';
-import { UserInterface } from '../../common/objects/user.object';
-import { QuestionsService } from '../questions/questions.service';
-import { GetQuestionsDto } from '../questions/dto/get-questions.dto';
 import { AnswerDto } from '../answers/dto/answer.dto';
 import { AnswersService } from '../answers/answers.service';
 import { UserInfo } from 'src/common/decorators/user.decorator';
+import { Roles } from 'src/common/decorators';
 
 @Controller('users')
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly questionsService: QuestionsService,
     private readonly answerService: AnswersService,
   ) {}
-
-  @Get('questions')
-  getQuestions(@Body() options: GetQuestionsDto) {
-    return this.questionsService.getQuestions(options);
-  }
 
   @Post('answer/:id')
   @Roles('consultant')

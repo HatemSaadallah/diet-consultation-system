@@ -1,7 +1,6 @@
 import {
   CanActivate,
   ExecutionContext,
-  Inject,
   Injectable,
   Logger,
 } from '@nestjs/common';
@@ -9,6 +8,8 @@ import { verifyToken } from '../utils/jwt';
 import { Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/modules/users/users.service';
+import { ROLES_TYPES } from '../constants';
+
 @Injectable()
 export class AuthGuard implements CanActivate {
   private logger = new Logger('AuthGuard');
@@ -20,7 +21,7 @@ export class AuthGuard implements CanActivate {
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.get<string[]>(
-      'public',
+      ROLES_TYPES.PUBLIC,
       context.getHandler(),
     );
     if (isPublic) {
@@ -40,9 +41,7 @@ export class AuthGuard implements CanActivate {
       const user = await this.userService.findUserById(data.id);
 
       request.user = user.get({ plain: true });
-      // request.user.userId = user.id;
     } catch {
-      // this.logger.error(EXCEPTIONS.UNAUTHORIZED);
       return false;
     }
     return true;
