@@ -13,19 +13,23 @@ export class UserService {
   private readonly logger = new CustomLogger(UserService.name);
 
   getUserByEmail(email: string): Promise<Users> {
+    this.logger.log(`Attempting to get user with email ${email}`);
     return this.userRepository.scope('basic').findOne({ where: { email } });
   }
   getUserByUserName(username: string): Promise<Users> {
+    this.logger.log(`Attempting to get user with username ${username}`);
     return this.userRepository.scope('basic').findOne({ where: { username } });
   }
 
   create(user: any): Promise<Users> {
+    this.logger.log(`Attempting to create user ${user.username}`);
     return this.userRepository.create(user);
   }
 
   // DONE: Implement see all questions
   // DONE: Add pagination
   findUserById(userId: number): Promise<Users> {
+    this.logger.log(`Attempting to get user with id ${userId}`);
     return this.userRepository.scope('basic').findOne({
       where: { id: userId },
     });

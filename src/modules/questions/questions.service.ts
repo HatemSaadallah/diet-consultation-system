@@ -23,7 +23,7 @@ export class QuestionsService {
     size = size || 5;
     page = page || 1;
 
-    return this.questionRepository.findAll({
+    return this.questionRepository.scope('basic').findAll({
       order: [
         ['number_of_answers', 'ASC'],
         ['created_at', 'DESC'],

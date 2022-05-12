@@ -4,6 +4,7 @@ import {
   DataType,
   Model,
   PrimaryKey,
+  Scopes,
   Table,
 } from 'sequelize-typescript';
 
@@ -12,6 +13,21 @@ import {
   timestamps: true,
   underscored: true,
   paranoid: true,
+})
+@Scopes(() => {
+  return {
+    basic: {
+      attributes: {
+        exclude: [
+          'updatedAt',
+          'createdAt',
+          'updatedBy',
+          'deletedAt',
+          'deletedBy',
+        ],
+      },
+    },
+  };
 })
 export class Questions extends Model<Questions> {
   @PrimaryKey
