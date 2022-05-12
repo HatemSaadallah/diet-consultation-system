@@ -7,5 +7,5 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.renameColumn('Questions', 'title', 'question_title');
-  }
+  },
 };

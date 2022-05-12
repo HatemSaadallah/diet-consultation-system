@@ -8,44 +8,43 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       question_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'Questions',
-          key: 'id'
+          key: 'id',
         },
       },
       answer_title: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       answer_description: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       answer_recommendation: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       deleted_at: {
         type: Sequelize.DATE,
         allowNull: true,
       },
-
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('Answers');
-  }
+  },
 };

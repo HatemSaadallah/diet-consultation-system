@@ -6,11 +6,11 @@ module.exports = {
     return queryInterface.addColumn('Questions', 'number_of_answers', {
       type: Sequelize.INTEGER,
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
     });
   },
 
-  down: (queryInterface, Sequelize) => {
+  down: (queryInterface) => {
     return queryInterface.removeColumn('Questions', 'number_of_answers');
-  }
+  },
 };

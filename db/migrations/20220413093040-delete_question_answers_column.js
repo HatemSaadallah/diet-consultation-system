@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn('Questions', 'question_answers'); 
+  up: (queryInterface) => {
+    return queryInterface.removeColumn('Questions', 'question_answers');
   },
 
   down: (queryInterface, Sequelize) => {
@@ -10,5 +10,5 @@ module.exports = {
       type: Sequelize.TEXT,
       allowNull: false,
     });
-  }
+  },
 };

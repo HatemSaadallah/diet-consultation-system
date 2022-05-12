@@ -8,12 +8,12 @@ module.exports = {
       allowNull: false,
       references: {
         model: 'Consultants',
-        key: 'id'
+        key: 'id',
       },
     });
   },
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.removeColumn('Answers', 'consultant_id');
-  }
+  },
 };

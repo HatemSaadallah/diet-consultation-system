@@ -6,14 +6,14 @@ module.exports = {
     return queryInterface.changeColumn('Questions', 'person_name', {
       type: Sequelize.STRING,
       allowNull: false,
-      defaultValue: 'Anonymous'
+      defaultValue: 'Anonymous',
     });
   },
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.changeColumn('Questions', 'person_name', {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     });
-  }
+  },
 };
