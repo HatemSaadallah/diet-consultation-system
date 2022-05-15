@@ -3,7 +3,7 @@ import { REPOSITORIES } from 'src/common/constants';
 import { Answers } from './answers.model';
 import { AnswerDto } from './dto/answer.dto';
 import { QuestionsService } from '../questions/questions.service';
-import { CustomLogger } from 'src/common/logger/winston.logger';
+import { CustomLogger } from 'src/common/loggers/winston.logger';
 import { UserInfoDto } from 'src/common/dto/user-info.dto';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class AnswersService {
 
     private questionsService: QuestionsService,
   ) {}
-  private readonly logger = new CustomLogger(AnswersService.name);
+  private readonly logger = new CustomLogger();
 
   async answerQuestion(
     questionId: number,

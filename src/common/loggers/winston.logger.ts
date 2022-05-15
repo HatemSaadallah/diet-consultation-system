@@ -17,12 +17,10 @@ const logger = winston.createLogger({
 });
 export class CustomLogger extends ConsoleLogger {
   debug(message: string) {
-    super.error(message);
     logger.error(message);
   }
 
   error(message: string) {
-    super.error(message);
     logger.error(message);
   }
 

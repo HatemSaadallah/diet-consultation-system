@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { CustomLogger } from 'src/common/logger/winston.logger';
+import { CustomLogger } from 'src/common/loggers/winston.logger';
 import { UserInterface } from 'src/common/interfaces/user.interface';
 import {
   comparePassword,
@@ -21,7 +21,7 @@ export class AuthService {
 
     private readonly logger: CustomLogger,
   ) {
-    this.logger = new CustomLogger('AuthService');
+    this.logger = new CustomLogger();
     this.logger.info('AuthService created');
   }
 

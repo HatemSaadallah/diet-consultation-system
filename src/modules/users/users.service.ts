@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REPOSITORIES } from 'src/common/constants';
-import { CustomLogger } from 'src/common/logger/winston.logger';
+import { CustomLogger } from 'src/common/loggers/winston.logger';
 import { Users } from './users.model';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class UsersService {
     private userRepository: typeof Users,
   ) {}
 
-  private readonly logger = new CustomLogger(UsersService.name);
+  private readonly logger = new CustomLogger();
 
   getUserByEmail(email: string): Promise<Users> {
     this.logger.log(`Attempting to get user with email ${email}`);

@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AuthGuard } from './common/guards/auth.guard';
-import { CustomLogger } from './common/logger/winston.logger';
+import { CustomLogger } from './common/loggers/winston.logger';
 import { UsersService } from './modules/users/users.service';
 import { RolesGuard } from './common/guards/roles.guard';
 
