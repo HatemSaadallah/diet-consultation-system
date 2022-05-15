@@ -6,13 +6,14 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { ROLE } from '../constants/system.constants';
 import { ERRORS } from '../utils';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
   async canActivate(context: ExecutionContext) {
-    const roles = this.reflector.get<string[]>('role', context.getHandler());
+    const roles = this.reflector.get<string[]>(ROLE, context.getHandler());
     if (!roles) {
       return true;
     }
