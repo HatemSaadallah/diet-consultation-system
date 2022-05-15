@@ -9,15 +9,15 @@ import {
 } from 'src/common/utils';
 import { generateToken } from 'src/common/utils/jwt';
 import { Users } from '../users/users.model';
-import { UserService } from '../users/users.service';
+import { UsersService } from '../users/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(UserService)
-    private userService: UserService,
+    @Inject(UsersService)
+    private userService: UsersService,
 
     private readonly logger: CustomLogger,
   ) {

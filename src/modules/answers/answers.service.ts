@@ -3,7 +3,6 @@ import { REPOSITORIES } from 'src/common/constants';
 import { Answers } from './answers.model';
 import { AnswerDto } from './dto/answer.dto';
 import { Users } from '../users/users.model';
-import { Questions } from '../questions/questions.model';
 import { QuestionsService } from '../questions/questions.service';
 import { CustomLogger } from 'src/common/logger/winston.logger';
 
@@ -13,14 +12,10 @@ export class AnswersService {
     @Inject(REPOSITORIES.ANSWER_REPOSITORY)
     private answerRepository: typeof Answers,
 
-    @Inject(REPOSITORIES.QUESTION_REPOSITORY)
-    private questionRepository: typeof Questions,
-
-    @Inject(QuestionsService)
     private questionsService: QuestionsService,
-
-    private logger: CustomLogger,
   ) {}
+  private readonly logger = new CustomLogger(AnswersService.name);
+
   // DONE: Insert into the new table of Users
   async answerQuestion(
     questionId: number,
@@ -33,7 +28,6 @@ export class AnswersService {
     await this.questionsService.incrementNumberOfAnswers(questionId);
     return this.answerRepository.create({
       ...answerBody,
-
       createdBy: id,
       isDraft: new Date(),
       questionId,
@@ -114,25 +108,23 @@ export class AnswersService {
   // DONE: return question info with answers
   async getAnswersForQuestion(id: number) {
     this.logger.log(`Attempting to get answers for question ${id}`);
-    this.questionRepository.hasMany(this.answerRepository, {
-      foreignKey: 'questionId',
-    });
-    const question = await this.questionRepository.findOne({
-      where: {
-        id,
-      },
-      include: [
-        {
-          model: Answers,
-          required: false,
-        },
-      ],
-    });
+    // Get Question by ID
+    const question = await this.questionsService.getQuestionById(id);
     if (!question) {
       return 'Question Not Found';
     }
 
-    return { question };
+    // Get Answers By ID
+    const answers = await this.answerRepository.findAll({
+      where: {
+        questionId: id,
+      },
+    });
+
+    return {
+      question,
+      answers,
+    };
   }
 
   getDrafts(userInfo: Users) {

@@ -4,13 +4,13 @@ import { CustomLogger } from 'src/common/logger/winston.logger';
 import { Users } from './users.model';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     @Inject(REPOSITORIES.USER_REPOSITORY)
     private userRepository: typeof Users,
   ) {}
 
-  private readonly logger = new CustomLogger(UserService.name);
+  private readonly logger = new CustomLogger(UsersService.name);
 
   getUserByEmail(email: string): Promise<Users> {
     this.logger.log(`Attempting to get user with email ${email}`);

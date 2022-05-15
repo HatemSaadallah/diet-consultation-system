@@ -3,7 +3,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AuthGuard } from './common/guards/auth.guard';
 import { CustomLogger } from './common/logger/winston.logger';
-import { UserService } from './modules/users/users.service';
+import { UsersService } from './modules/users/users.service';
 import { RolesGuard } from './common/guards/roles.guard';
 
 declare const module: any;
@@ -12,7 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new CustomLogger(),
   });
-  const userService = app.get(UserService);
+  const userService = app.get(UsersService);
 
   const configService = app.get(ConfigService);
   app.useGlobalGuards(

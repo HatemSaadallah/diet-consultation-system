@@ -7,7 +7,7 @@ import {
 import { verifyToken } from '../utils/jwt';
 import { Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
-import { UserService } from 'src/modules/users/users.service';
+import { UsersService } from 'src/modules/users/users.service';
 import { ROLES_TYPES } from '../constants';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
     private readonly configService: ConfigService,
     private readonly reflector: Reflector,
 
-    private readonly userService: UserService,
+    private readonly userService: UsersService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.get<string[]>(

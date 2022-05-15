@@ -6,6 +6,7 @@ import configFile from 'config';
 import { CustomLogger } from './common/logger/winston.logger';
 import { AuthModule } from './modules/auth/auth.module';
 import { QuestionsModule } from './modules/questions/questions.module';
+import { AnswerModule } from './modules/answers/answers.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { QuestionsModule } from './modules/questions/questions.module';
     UsersModule,
     AuthModule,
     QuestionsModule,
+    AnswerModule,
     ConfigModule.forRoot({
       load: [configFile],
       isGlobal: true,
