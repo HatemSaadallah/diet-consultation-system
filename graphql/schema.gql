@@ -1,0 +1,76 @@
+interface Node {
+    id: ID;
+}
+
+enum Role {
+    patient,
+    consultant,
+}
+
+type User implements Node {
+    id: ID!
+    firstName: String!
+    middleName: String
+    lastName: String!
+    username: String!
+    email: String!
+    role: Role!
+    password: String!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type Question implements Node {
+    id: ID!
+    title: String!
+    description: String!
+    numberOfAnswers: Int!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type Answer implements Node {
+    id: ID!
+    question_id: ID!
+    title: String!
+    description: String!
+    recommendations: String!
+    is_draft: Boolean!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type Query {
+    questions(page: Int, size: Int): [Question!]
+    question(id: ID!): Question
+    answers(question_id: ID!, page: Int, size: Int): [Answer!]
+    answer(id: ID!): Answer
+}
+
+type Mutation {
+    signUp(
+        email: String!
+        password: String!
+        firstName: String!
+        middleName: String
+        lastName: String!
+        username: String!
+    ): User
+
+    signIn(
+        email: String!
+        password: String!
+    ): User
+
+    createQuestion(
+        title: String!
+        description: String!
+    ): Question
+
+    createAnswer(
+        question_id: ID!
+        title: String!
+        description: String!
+        recommendations: String!
+    ): Answer
+}

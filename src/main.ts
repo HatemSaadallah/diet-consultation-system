@@ -8,6 +8,8 @@ import { RolesGuard } from './common/guards/roles.guard';
 
 declare const module: any;
 
+global.fetch = require('node-fetch');
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new CustomLogger(),

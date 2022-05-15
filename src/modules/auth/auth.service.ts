@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CustomLogger } from 'src/common/loggers/winston.logger';
 import { UserInterface } from 'src/common/interfaces/user.interface';
+import { ConfigService } from '@nestjs/config';
+
 import {
   comparePassword,
   ERRORS,
@@ -13,19 +15,35 @@ import { UsersService } from '../users/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserPool,
+} from 'amazon-cognito-identity-js';
+
 @Injectable()
 export class AuthService {
+  private userPool: CognitoUserPool;
+
   constructor(
     @Inject(UsersService)
     private userService: UsersService,
 
     private readonly logger: CustomLogger,
+    private readonly configService: ConfigService,
   ) {
     this.logger = new CustomLogger();
     this.logger.info('AuthService created');
+
+    this.userPool = new CognitoUserPool({
+      UserPoolId: this.configService.get('userPoolId'),
+      ClientId: this.configService.get('clientId'),
+    });
   }
 
   async signup(createUserDto: CreateUserDto): Promise<Users> {
+    console.log(11111111111, this.configService.get('userPoolId'));
+
     this.logger.log('Signup Called');
     const { password, ...restData } = createUserDto;
     const userByEmail: Users = await this.userService.getUserByEmail(

@@ -34,6 +34,7 @@
     "@nestjs/websockets": "^8.4.2",
     "@sequelize/core": "^7.0.0-alpha.10",
     "@types/cls-hooked": "^4.3.3",
+    "amazon-cognito-identity-js": "^5.2.8",
     "bcrypt": "^5.0.1",
     "cache-manager": "^3.6.1",
     "class-transformer": "^0.5.1",
