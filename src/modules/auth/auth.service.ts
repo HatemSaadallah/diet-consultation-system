@@ -60,7 +60,7 @@ export class AuthService {
       password: hashedPassword,
     });
   }
-  // DONE: Implement Login Feature
+
   async login(loginInfo: LoginUserDto): Promise<UserInterface> {
     if (!loginInfo.loginToken) {
       EXCEPTIONS.LOGIN_ERROR;
@@ -122,7 +122,6 @@ export class AuthService {
     return userObject;
   }
 
-  // DONE: Check if Input is email or username
   private emailOrUsername(input: string): string {
     if (input.includes('@')) {
       return 'EMAIL';

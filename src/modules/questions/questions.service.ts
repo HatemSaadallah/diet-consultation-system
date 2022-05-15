@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REPOSITORIES } from 'src/common/constants';
-import { Users } from '../users/users.model';
+import { UserInfoDto } from 'src/common/dto/user-info.dto';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { GetQuestionsDto } from './dto/get-questions.dto';
 import { Questions } from './questions.model';
@@ -12,7 +12,7 @@ export class QuestionsService {
     private questionRepository: typeof Questions,
   ) {}
 
-  createQuestion(question: CreateQuestionDto, userInfo: Users) {
+  createQuestion(question: CreateQuestionDto, userInfo: UserInfoDto) {
     return this.questionRepository.create({
       ...question,
       createdBy: userInfo.id,

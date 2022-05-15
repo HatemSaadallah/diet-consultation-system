@@ -2,9 +2,9 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { REPOSITORIES } from 'src/common/constants';
 import { Answers } from './answers.model';
 import { AnswerDto } from './dto/answer.dto';
-import { Users } from '../users/users.model';
 import { QuestionsService } from '../questions/questions.service';
 import { CustomLogger } from 'src/common/logger/winston.logger';
+import { UserInfoDto } from 'src/common/dto/user-info.dto';
 
 @Injectable()
 export class AnswersService {
@@ -16,11 +16,10 @@ export class AnswersService {
   ) {}
   private readonly logger = new CustomLogger(AnswersService.name);
 
-  // DONE: Insert into the new table of Users
   async answerQuestion(
     questionId: number,
     answerBody: AnswerDto,
-    userInfo: Users,
+    userInfo: UserInfoDto,
   ): Promise<Answers> {
     const { id } = userInfo;
     this.logger.log(`Attempting to answer question ${questionId}`);
@@ -34,9 +33,12 @@ export class AnswersService {
       createdAt: new Date(),
     });
   }
-  // Create draft
-  // DONE: Implement draft feature
-  async createDraft(questionId: number, userInfo: Users, draftBody: AnswerDto) {
+
+  async createDraft(
+    questionId: number,
+    userInfo: UserInfoDto,
+    draftBody: AnswerDto,
+  ) {
     this.logger.log(`Attempting to create draft for question ${questionId}`);
     const { id } = userInfo;
     const question = await this.questionsService.getQuestionById(questionId);
@@ -91,7 +93,6 @@ export class AnswersService {
     };
   }
 
-  // DONE: Get Draft By Username, questionId
   getDraftByUserIdAndQuestionId(userId: number, questionId: number) {
     this.logger.log(
       `Attempting to get draft for user ${userId} and question ${questionId}`,
@@ -105,7 +106,6 @@ export class AnswersService {
     });
   }
 
-  // DONE: return question info with answers
   async getAnswersForQuestion(id: number) {
     this.logger.log(`Attempting to get answers for question ${id}`);
     // Get Question by ID
@@ -127,7 +127,7 @@ export class AnswersService {
     };
   }
 
-  getDrafts(userInfo: Users) {
+  getDrafts(userInfo: UserInfoDto) {
     this.logger.log(`Attempting to get drafts for user ${userInfo.id}`);
     const { id } = userInfo;
     return this.answerRepository.findAll({

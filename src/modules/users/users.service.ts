@@ -26,8 +26,6 @@ export class UsersService {
     return this.userRepository.create(user);
   }
 
-  // DONE: Implement see all questions
-  // DONE: Add pagination
   findUserById(userId: number): Promise<Users> {
     this.logger.log(`Attempting to get user with id ${userId}`);
     return this.userRepository.scope('basic').findOne({

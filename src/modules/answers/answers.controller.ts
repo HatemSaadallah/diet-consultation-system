@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import { Roles } from 'src/common/decorators';
 import { UserInfo } from 'src/common/decorators/user.decorator';
-import { Users } from '../users/users.model';
+import { UserInfoDto } from 'src/common/dto/user-info.dto';
 import { AnswersService } from './answers.service';
 import { AnswerDto } from './dto/answer.dto';
 
@@ -11,11 +11,11 @@ export class AnswersController {
     @Inject(AnswersService)
     private readonly answerService: AnswersService,
   ) {}
-
+  // Define Logger
   @Post('/:id')
   @Roles('consultant')
   answerQuestion(
-    @UserInfo() userInfo: Users,
+    @UserInfo() userInfo: UserInfoDto,
     @Param('id') id: string,
     @Body() answerBody: AnswerDto,
   ) {
@@ -25,7 +25,7 @@ export class AnswersController {
   @Post('create-draft/:id')
   createDraft(
     @Param('id') id,
-    @UserInfo() userInfo: Users,
+    @UserInfo() userInfo: UserInfoDto,
     @Body() draftBody: AnswerDto,
   ) {
     return this.answerService.createDraft(+id, userInfo, draftBody);
@@ -38,7 +38,7 @@ export class AnswersController {
 
   @Get('/drafts')
   @Roles('consultant')
-  getDrafts(@UserInfo() userInfo: Users) {
+  getDrafts(@UserInfo() userInfo: UserInfoDto) {
     return this.answerService.getDrafts(userInfo);
   }
 }

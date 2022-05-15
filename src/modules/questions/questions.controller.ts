@@ -1,6 +1,6 @@
-import { Controller, Post, Body, Get, Param, Inject } from '@nestjs/common';
+import { Controller, Post, Body, Get, Logger } from '@nestjs/common';
 import { UserInfo } from 'src/common/decorators/user.decorator';
-import { Users } from '../users/users.model';
+import { UserInfoDto } from 'src/common/dto/user-info.dto';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { GetQuestionsDto } from './dto/get-questions.dto';
 import { QuestionsService } from './questions.service';
@@ -8,7 +8,8 @@ import { QuestionsService } from './questions.service';
 @Controller('questions')
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
-
+  // Define Logger
+  private readonly logger = new Logger('QuestionsController');
   @Get('')
   getQuestions(@Body() options: GetQuestionsDto) {
     return this.questionsService.getQuestions(options);
@@ -17,7 +18,7 @@ export class QuestionsController {
   @Post('create')
   create(
     @Body() createQuestionDto: CreateQuestionDto,
-    @UserInfo() userInfo: Users,
+    @UserInfo() userInfo: UserInfoDto,
   ): Promise<CreateQuestionDto> {
     return this.questionsService.createQuestion(createQuestionDto, userInfo);
   }
