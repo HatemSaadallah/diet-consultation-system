@@ -25,7 +25,6 @@ export class AuthService {
     this.logger.info('AuthService created');
   }
 
-  // DONE: Create a user
   async signup(createUserDto: CreateUserDto): Promise<Users> {
     this.logger.log('Signup Called');
     const { password, ...restData } = createUserDto;
