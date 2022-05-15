@@ -23,7 +23,7 @@ export class AnswersService {
     userInfo: Users,
   ): Promise<Answers> {
     const { id } = userInfo;
-
+    this.logger.log(`Attempting to answer question ${questionId}`);
     // update the question
     await this.questionsService.incrementNumberOfAnswers(questionId);
     return this.answerRepository.create({

@@ -12,7 +12,7 @@ export class AnswersController {
     private readonly answerService: AnswersService,
   ) {}
 
-  @Post('answer/:id')
+  @Post('/:id')
   @Roles('consultant')
   answerQuestion(
     @UserInfo() userInfo: Users,
