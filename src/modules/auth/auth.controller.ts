@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { Public } from 'src/common/decorators';
-import { UserInterface } from 'src/common/objects/user.object';
+import { UserInterface } from 'src/common/interfaces/user.interface';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { LoginUserDto } from '../auth/dto/login-user.dto';
 import { AuthService } from './auth.service';

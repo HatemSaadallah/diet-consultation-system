@@ -6,11 +6,11 @@ module.exports = {
       type: Sequelize.DATE,
       allowNull: false,
       // Zero date means it's a draft
-      defaultValue: new Date(0)
+      defaultValue: new Date(0),
     });
   },
 
-  down: (queryInterface, Sequelize) => {
+  down: (queryInterface) => {
     return queryInterface.removeColumn('Answers', 'is_draft');
-  }
+  },
 };

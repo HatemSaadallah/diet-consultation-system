@@ -1,5 +1,5 @@
 import { Users } from 'src/modules/users/users.model';
-import { AnswerDto } from '../dto/answer.dto';
+import { AnswerDto } from '../../modules/answers/dto/answer.dto';
 
 export const AnswerObject = (answerBody: AnswerDto, userInfo: Users) => {
   return {

@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CustomLogger } from 'src/common/logger/winston.logger';
-import { UserInterface } from 'src/common/objects/user.object';
+import { UserInterface } from 'src/common/interfaces/user.interface';
 import {
   comparePassword,
   ERRORS,

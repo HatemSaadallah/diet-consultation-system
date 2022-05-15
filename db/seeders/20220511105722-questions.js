@@ -8,9 +8,9 @@ const questions = [...Array(20)].map(() => ({
   description: faker.lorem.paragraph(),
   number_of_answers: 0,
   created_at: new Date(),
-  created_by: 4,
+  created_by: 1,
   updated_at: new Date(),
-  updated_by: 4,
+  updated_by: null,
   deleted_at: null,
   deleted_by: null,
 }));

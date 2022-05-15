@@ -3,9 +3,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.renameTable('Consultants', 'Users');
-    // await queryInterface.renameColumn('Answers', 'consultant_id', 'user_id');
-    // await queryInterface.renameColumn('Users', 'consultant_id', 'user_id');
-    // await queryInterface.renameColumn('Users', 'role', 'type');
     await queryInterface.addColumn('Users', 'type', {
       type: Sequelize.ENUM,
       values: ['patient', 'consultant'],

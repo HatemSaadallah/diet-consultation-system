@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { CustomLogger } from 'src/common/logger/winston.logger';
+import { AnswersService } from './answers.service';
 
 @Module({
   imports: [],
   controllers: [],
-  providers: [CustomLogger],
+  providers: [AnswersService],
 })
 export class AnswerModule {}

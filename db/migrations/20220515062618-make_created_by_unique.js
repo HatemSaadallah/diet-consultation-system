@@ -1,16 +1,15 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    // consultant ID & is_draft & question ID are compisitely unique
+  up: (queryInterface) => {
     return queryInterface.addConstraint('Answers', {
       type: 'unique',
       name: 'unique_answer',
-      fields: ['consultant_id', 'is_draft', 'question_id'],
+      fields: ['created_by', 'is_draft', 'question_id'],
     });
   },
 
-  down: (queryInterface, Sequelize) => {
+  down: (queryInterface) => {
     return queryInterface.removeConstraint('Answers', 'unique_answer');
   },
 };
