@@ -15,6 +15,8 @@ import {
   CognitoUserAttribute,
 } from 'amazon-cognito-identity-js';
 import { CreateUserCognitoDto } from './dto/create-user-cognito';
+import { UserInfoDto } from 'src/common/dto/user-info.dto';
+import { ChangePasswordDto } from './dto/change-password-dto';
 
 @Injectable()
 export class AuthService {
@@ -107,6 +109,7 @@ export class AuthService {
       );
     });
   }
+
   signupInDB(createUserDto: CreateUserDto): Promise<Users> {
     this.logger.log(`User with email ${createUserDto.email} created`);
     return this.userService.create(createUserDto);
@@ -146,67 +149,65 @@ export class AuthService {
       });
     });
   }
+  changePassword(
+    changePasswordDto: ChangePasswordDto,
+    userInfo: UserInfoDto,
+  ): Promise<any> {
+    const { oldPassword, newPassword } = changePasswordDto;
 
-  // async login(loginInfo: LoginUserDto): Promise<UserInterface> {
-  //   if (!loginInfo.username) {
-  //     EXCEPTIONS.LOGIN_ERROR;
-  //   }
-  //   let userFound: Users;
-  //   switch (this.emailOrUsername(loginInfo.username)) {
-  //     case 'EMAIL':
-  //       userFound = await this.userService.getUserByEmail(loginInfo.username);
+    const authenticationDetails = new AuthenticationDetails({
+      Username: userInfo.username,
+      Password: oldPassword,
+    });
 
-  //       if (!userFound) {
-  //         throw new HttpException(
-  //           {
-  //             status: HttpStatus.BAD_REQUEST,
-  //             error: ERRORS.USER_NOT_FOUND,
-  //           },
-  //           HttpStatus.BAD_REQUEST,
-  //         );
-  //       }
-  //       break;
-  //     case 'USERNAME':
-  //       userFound = await this.userService.getUserByUserName(
-  //         loginInfo.username,
-  //       );
+    const userData = {
+      Username: userInfo.username,
+      Pool: this.userPool,
+    };
 
-  //       if (!userFound) {
-  //         throw new HttpException(
-  //           {
-  //             status: HttpStatus.BAD_REQUEST,
-  //             error: ERRORS.USER_NOT_FOUND,
-  //           },
-  //           HttpStatus.BAD_REQUEST,
-  //         );
-  //       }
-  //       break;
-  //     default:
-  //       '';
-  //   }
-  //   // const isPasswordValid = await comparePassword(
-  //   //   loginInfo.password,
-  //   //   userFound.password,
-  //   // );
+    const cognitoUser = new CognitoUser(userData);
 
-  //   if (!isPasswordValid) {
-  //     throw new HttpException(
-  //       {
-  //         status: HttpStatus.BAD_REQUEST,
-  //         error: ERRORS.PASSWORD_INCORRECT,
-  //       },
-  //       HttpStatus.BAD_REQUEST,
-  //     );
-  //   }
-  //   userFound = userFound.get({ plain: true });
-  //   const token: string = generateToken(userFound);
-  //   const userObject: UserInterface = {
-  //     ...userFound,
-  //     token,
-  //   };
-  //   return userObject;
-  // }
-
+    return new Promise((resolve, reject) => {
+      cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: (result) => {
+          cognitoUser.changePassword(
+            oldPassword,
+            newPassword,
+            (err, result) => {
+              if (err) {
+                this.logger.error(err.stack);
+                reject(
+                  new HttpException(
+                    {
+                      status: HttpStatus.BAD_REQUEST,
+                      error: err.message,
+                    },
+                    HttpStatus.BAD_REQUEST,
+                  ),
+                );
+              } else {
+                resolve({
+                  result,
+                });
+              }
+            },
+          );
+        },
+        onFailure: (err) => {
+          this.logger.error(err.stack);
+          reject(
+            new HttpException(
+              {
+                status: HttpStatus.BAD_REQUEST,
+                error: err.message,
+              },
+              HttpStatus.BAD_REQUEST,
+            ),
+          );
+        },
+      });
+    });
+  }
   private emailOrUsername(input: string): string {
     if (input.includes('@')) {
       return 'EMAIL';
