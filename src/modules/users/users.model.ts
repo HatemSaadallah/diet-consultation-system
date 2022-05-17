@@ -47,9 +47,6 @@ export class Users extends Model<Users> {
   username: string;
 
   @Column(DataType.STRING)
-  password: string;
-
-  @Column(DataType.STRING)
   firstName: string;
 
   @Column(DataType.STRING)

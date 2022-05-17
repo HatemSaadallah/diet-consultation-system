@@ -4,7 +4,7 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { verifyToken } from '../utils/jwt';
+import { verifyIDToken } from '../utils/jwt';
 import { Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from 'src/modules/users/users.service';
@@ -36,11 +36,11 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const data = verifyToken(token, this.configService.get('JWTKEY'));
-
-      const user = await this.userService.findUserById(data.id);
+      const data: any = await verifyIDToken(token);
+      const user = await this.userService.getUserByEmail(data.email);
 
       request.user = user.get({ plain: true });
+      console.log(request.user);
     } catch {
       return false;
     }

@@ -23,6 +23,7 @@ import {
 } from 'amazon-cognito-identity-js';
 import { UserVerificationDto } from './dto/verify-user.dto';
 import { UserInfoDto } from 'src/common/dto/user-info.dto';
+import { CreateUserCognitoDto } from './dto/create-user-cognito';
 
 @Injectable()
 export class AuthService {
@@ -44,10 +45,10 @@ export class AuthService {
     });
   }
 
-  register(createUserDto: CreateUserDto): Promise<any> {
+  register(createUserCognitoDto: CreateUserCognitoDto): Promise<any> {
     this.logger.log('Signup Called');
 
-    const { password, email, ...restData } = createUserDto;
+    const { password, email, ...restData } = createUserCognitoDto;
     const attributeList = [];
     attributeList.push(
       new CognitoUserAttribute({ Name: 'email', Value: email }),
@@ -61,7 +62,9 @@ export class AuthService {
         null,
         (err, result) => {
           if (err) {
-            this.logger.error(err.stack);
+            this.logger.error(
+              `Error while signing up user ${restData.username}`,
+            );
             reject(
               new HttpException(
                 {
@@ -71,46 +74,16 @@ export class AuthService {
                 HttpStatus.BAD_REQUEST,
               ),
             );
+          } else {
+            this.signupInDB(createUserCognitoDto);
           }
-          this.signup(createUserDto);
           resolve(result);
         },
       );
     });
   }
-
-  verifyUser(
-    userInfo: UserInfoDto,
-    userVerificationDto: UserVerificationDto,
-  ): Promise<any> {
-    const { verificationCode } = userVerificationDto;
-    const { email, username } = userInfo;
-
-    const userData = {
-      Username: username,
-      Pool: this.userPool,
-    };
-    const cognitoUser = new CognitoUser(userData);
-
-    console.log(111111111, verificationCode);
-    cognitoUser.confirmRegistration(
-      verificationCode,
-      true,
-      function (err, result) {
-        if (err) {
-          alert(err.message || JSON.stringify(err));
-          return;
-        }
-        console.log('call result: ' + result);
-      },
-    );
-    return new Promise((resolve, reject) => {
-      resolve(0);
-    });
-  }
-
-  async signup(createUserDto: CreateUserDto): Promise<Users> {
-    const { password, ...restData } = createUserDto;
+  async signupInDB(createUserDto: CreateUserDto): Promise<Users> {
+    // const { password, ...restData } = createUserDto;
     const userByEmail: Users = await this.userService.getUserByEmail(
       createUserDto.email,
     );
@@ -121,27 +94,30 @@ export class AuthService {
     if (userByEmail) {
       this.logger.warn(`User with email ${createUserDto.email} already exist`);
       throw new HttpException(
-        `User with email ${createUserDto.email} already exist`,
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: ERRORS.USER_ALREADY_EXIST,
+        },
         HttpStatus.BAD_REQUEST,
       );
     }
+
     if (userByUsername) {
       this.logger.warn(
         `User with username ${createUserDto.username} already exist`,
       );
-
       throw new HttpException(
-        `User with username ${createUserDto.username} already exist`,
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: ERRORS.USER_ALREADY_EXIST,
+        },
         HttpStatus.BAD_REQUEST,
       );
     }
-    const hashedPassword = await hashPassword(password);
     this.logger.log(`User with email ${createUserDto.email} created`);
-    return this.userService.create({
-      ...restData,
-      password: hashedPassword,
-    });
+    return this.userService.create(createUserDto);
   }
+
   userLoginWithCognito(loginUserDto: LoginUserDto): Promise<any> {
     const { username, password } = loginUserDto;
     const authenticationDetails = new AuthenticationDetails({
@@ -156,8 +132,6 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: (result) => {
-          console.log(result.getIdToken().getJwtToken());
-
           const token = result.getIdToken().getJwtToken();
           resolve({
             result,
@@ -179,66 +153,65 @@ export class AuthService {
     });
   }
 
-  async login(loginInfo: LoginUserDto): Promise<UserInterface> {
-    if (!loginInfo.username) {
-      EXCEPTIONS.LOGIN_ERROR;
-    }
-    let userFound: Users;
-    switch (this.emailOrUsername(loginInfo.username)) {
-      case 'EMAIL':
-        userFound = await this.userService.getUserByEmail(loginInfo.username);
+  // async login(loginInfo: LoginUserDto): Promise<UserInterface> {
+  //   if (!loginInfo.username) {
+  //     EXCEPTIONS.LOGIN_ERROR;
+  //   }
+  //   let userFound: Users;
+  //   switch (this.emailOrUsername(loginInfo.username)) {
+  //     case 'EMAIL':
+  //       userFound = await this.userService.getUserByEmail(loginInfo.username);
 
-        if (!userFound) {
-          throw new HttpException(
-            {
-              status: HttpStatus.BAD_REQUEST,
-              error: ERRORS.USER_NOT_FOUND,
-            },
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-        break;
-      case 'USERNAME':
-        userFound = await this.userService.getUserByUserName(
-          loginInfo.username,
-        );
+  //       if (!userFound) {
+  //         throw new HttpException(
+  //           {
+  //             status: HttpStatus.BAD_REQUEST,
+  //             error: ERRORS.USER_NOT_FOUND,
+  //           },
+  //           HttpStatus.BAD_REQUEST,
+  //         );
+  //       }
+  //       break;
+  //     case 'USERNAME':
+  //       userFound = await this.userService.getUserByUserName(
+  //         loginInfo.username,
+  //       );
 
-        if (!userFound) {
-          throw new HttpException(
-            {
-              status: HttpStatus.BAD_REQUEST,
-              error: ERRORS.USER_NOT_FOUND,
-            },
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-        break;
-      default:
-        '';
-    }
-    const isPasswordValid = await comparePassword(
-      loginInfo.password,
-      userFound.password,
-    );
+  //       if (!userFound) {
+  //         throw new HttpException(
+  //           {
+  //             status: HttpStatus.BAD_REQUEST,
+  //             error: ERRORS.USER_NOT_FOUND,
+  //           },
+  //           HttpStatus.BAD_REQUEST,
+  //         );
+  //       }
+  //       break;
+  //     default:
+  //       '';
+  //   }
+  //   // const isPasswordValid = await comparePassword(
+  //   //   loginInfo.password,
+  //   //   userFound.password,
+  //   // );
 
-    if (!isPasswordValid) {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: ERRORS.PASSWORD_INCORRECT,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    userFound = userFound.get({ plain: true });
-    delete userFound.password;
-    const token: string = generateToken(userFound);
-    const userObject: UserInterface = {
-      ...userFound,
-      token,
-    };
-    return userObject;
-  }
+  //   if (!isPasswordValid) {
+  //     throw new HttpException(
+  //       {
+  //         status: HttpStatus.BAD_REQUEST,
+  //         error: ERRORS.PASSWORD_INCORRECT,
+  //       },
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+  //   userFound = userFound.get({ plain: true });
+  //   const token: string = generateToken(userFound);
+  //   const userObject: UserInterface = {
+  //     ...userFound,
+  //     token,
+  //   };
+  //   return userObject;
+  // }
 
   private emailOrUsername(input: string): string {
     if (input.includes('@')) {

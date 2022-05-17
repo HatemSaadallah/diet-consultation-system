@@ -6,6 +6,7 @@ import { UserInterface } from 'src/common/interfaces/user.interface';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { LoginUserDto } from '../auth/dto/login-user.dto';
 import { AuthService } from './auth.service';
+import { CreateUserCognitoDto } from './dto/create-user-cognito';
 import { UserVerificationDto } from './dto/verify-user.dto';
 
 @Controller('')
@@ -14,24 +15,16 @@ export class AuthController {
 
   @Public()
   @Post('signup')
-  create(@Body() createUserDto: CreateUserDto): Promise<CreateUserDto> {
+  create(
+    @Body() createUserCognitoDto: CreateUserCognitoDto,
+  ): Promise<CreateUserDto> {
     // return this.authService.signup(createUserDto);
-    return this.authService.register(createUserDto);
+    return this.authService.register(createUserCognitoDto);
   }
 
   @Public()
   @Post('login')
   login(@Body() loginInfo: LoginUserDto): Promise<UserInterface> {
-    // return this.authService.login(loginInfo);
-    // console.log(1111111111, 'loginInfo');
     return this.authService.userLoginWithCognito(loginInfo);
-  }
-
-  @Post('verify')
-  verify(
-    @UserInfo() userInfo: UserInfoDto,
-    @Body() userVerificationDto: UserVerificationDto,
-  ): Promise<any> {
-    return this.authService.verifyUser(userInfo, userVerificationDto);
   }
 }
