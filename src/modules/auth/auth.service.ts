@@ -3,13 +3,6 @@ import { CustomLogger } from 'src/common/loggers/winston.logger';
 import { UserInterface } from 'src/common/interfaces/user.interface';
 import { ConfigService } from '@nestjs/config';
 
-import {
-  comparePassword,
-  ERRORS,
-  EXCEPTIONS,
-  hashPassword,
-} from 'src/common/utils';
-import { generateToken } from 'src/common/utils/jwt';
 import { Users } from '../users/users.model';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,8 +14,6 @@ import {
   CognitoUserPool,
   CognitoUserAttribute,
 } from 'amazon-cognito-identity-js';
-import { UserVerificationDto } from './dto/verify-user.dto';
-import { UserInfoDto } from 'src/common/dto/user-info.dto';
 import { CreateUserCognitoDto } from './dto/create-user-cognito';
 
 @Injectable()
@@ -45,11 +36,45 @@ export class AuthService {
     });
   }
 
-  register(createUserCognitoDto: CreateUserCognitoDto): Promise<any> {
+  async register(createUserCognitoDto: CreateUserCognitoDto): Promise<any> {
     this.logger.log('Signup Called');
 
     const { password, email, ...restData } = createUserCognitoDto;
+    // Check if user already exist
+    const userByEmail: Users = await this.userService.getUserByEmail(
+      createUserCognitoDto.email,
+    );
+    const userByUsername: Users = await this.userService.getUserByUserName(
+      createUserCognitoDto.username,
+    );
+
+    if (userByEmail) {
+      this.logger.warn(
+        `User with email ${createUserCognitoDto.email} already exist`,
+      );
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: `User with email ${createUserCognitoDto.email} already exist`,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (userByUsername) {
+      this.logger.warn(
+        `User with username ${createUserCognitoDto.username} already exist`,
+      );
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: `User with username ${createUserCognitoDto.username} already exist`,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const attributeList = [];
+
     attributeList.push(
       new CognitoUserAttribute({ Name: 'email', Value: email }),
     );
@@ -82,57 +107,26 @@ export class AuthService {
       );
     });
   }
-  async signupInDB(createUserDto: CreateUserDto): Promise<Users> {
-    // const { password, ...restData } = createUserDto;
-    const userByEmail: Users = await this.userService.getUserByEmail(
-      createUserDto.email,
-    );
-    const userByUsername: Users = await this.userService.getUserByUserName(
-      createUserDto.username,
-    );
-
-    if (userByEmail) {
-      this.logger.warn(`User with email ${createUserDto.email} already exist`);
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: ERRORS.USER_ALREADY_EXIST,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    if (userByUsername) {
-      this.logger.warn(
-        `User with username ${createUserDto.username} already exist`,
-      );
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: ERRORS.USER_ALREADY_EXIST,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  signupInDB(createUserDto: CreateUserDto): Promise<Users> {
     this.logger.log(`User with email ${createUserDto.email} created`);
     return this.userService.create(createUserDto);
   }
 
   userLoginWithCognito(loginUserDto: LoginUserDto): Promise<any> {
-    const { username, password } = loginUserDto;
+    const { loginToken, password } = loginUserDto;
     const authenticationDetails = new AuthenticationDetails({
-      Username: username,
+      // Username: username,
+      Username: loginToken,
       Password: password,
     });
     const userData = {
-      Username: username,
+      Username: loginToken,
       Pool: this.userPool,
     };
     const cognitoUser = new CognitoUser(userData);
     return new Promise((resolve, reject) => {
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: (result) => {
-          const token = result.getIdToken().getJwtToken();
           resolve({
             result,
           });

@@ -18,7 +18,6 @@ export class AuthController {
   create(
     @Body() createUserCognitoDto: CreateUserCognitoDto,
   ): Promise<CreateUserDto> {
-    // return this.authService.signup(createUserDto);
     return this.authService.register(createUserCognitoDto);
   }
 
