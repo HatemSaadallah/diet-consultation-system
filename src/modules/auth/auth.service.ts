@@ -19,7 +19,10 @@ import {
   AuthenticationDetails,
   CognitoUser,
   CognitoUserPool,
+  CognitoUserAttribute,
 } from 'amazon-cognito-identity-js';
+import { UserVerificationDto } from './dto/verify-user.dto';
+import { UserInfoDto } from 'src/common/dto/user-info.dto';
 
 @Injectable()
 export class AuthService {
@@ -36,15 +39,77 @@ export class AuthService {
     this.logger.info('AuthService created');
 
     this.userPool = new CognitoUserPool({
-      UserPoolId: this.configService.get('userPoolId'),
-      ClientId: this.configService.get('clientId'),
+      UserPoolId: this.configService.get('COGNITO_USER_POOL_ID'),
+      ClientId: this.configService.get('COGNITO_CLIENT_ID'),
+    });
+  }
+
+  register(createUserDto: CreateUserDto): Promise<any> {
+    this.logger.log('Signup Called');
+
+    const { password, email, ...restData } = createUserDto;
+    const attributeList = [];
+    attributeList.push(
+      new CognitoUserAttribute({ Name: 'email', Value: email }),
+    );
+
+    return new Promise((resolve, reject) => {
+      return this.userPool.signUp(
+        restData.username,
+        password,
+        attributeList,
+        null,
+        (err, result) => {
+          if (err) {
+            this.logger.error(err.stack);
+            reject(
+              new HttpException(
+                {
+                  status: HttpStatus.BAD_REQUEST,
+                  error: err.message,
+                },
+                HttpStatus.BAD_REQUEST,
+              ),
+            );
+          }
+          this.signup(createUserDto);
+          resolve(result);
+        },
+      );
+    });
+  }
+
+  verifyUser(
+    userInfo: UserInfoDto,
+    userVerificationDto: UserVerificationDto,
+  ): Promise<any> {
+    const { verificationCode } = userVerificationDto;
+    const { email, username } = userInfo;
+
+    const userData = {
+      Username: username,
+      Pool: this.userPool,
+    };
+    const cognitoUser = new CognitoUser(userData);
+
+    console.log(111111111, verificationCode);
+    cognitoUser.confirmRegistration(
+      verificationCode,
+      true,
+      function (err, result) {
+        if (err) {
+          alert(err.message || JSON.stringify(err));
+          return;
+        }
+        console.log('call result: ' + result);
+      },
+    );
+    return new Promise((resolve, reject) => {
+      resolve(0);
     });
   }
 
   async signup(createUserDto: CreateUserDto): Promise<Users> {
-    console.log(11111111111, this.configService.get('userPoolId'));
-
-    this.logger.log('Signup Called');
     const { password, ...restData } = createUserDto;
     const userByEmail: Users = await this.userService.getUserByEmail(
       createUserDto.email,
@@ -77,15 +142,51 @@ export class AuthService {
       password: hashedPassword,
     });
   }
+  userLoginWithCognito(loginUserDto: LoginUserDto): Promise<any> {
+    const { username, password } = loginUserDto;
+    const authenticationDetails = new AuthenticationDetails({
+      Username: username,
+      Password: password,
+    });
+    const userData = {
+      Username: username,
+      Pool: this.userPool,
+    };
+    const cognitoUser = new CognitoUser(userData);
+    return new Promise((resolve, reject) => {
+      cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: (result) => {
+          console.log(result.getIdToken().getJwtToken());
+
+          const token = result.getIdToken().getJwtToken();
+          resolve({
+            result,
+          });
+        },
+        onFailure: (err) => {
+          this.logger.error(err.stack);
+          reject(
+            new HttpException(
+              {
+                status: HttpStatus.BAD_REQUEST,
+                error: err.message,
+              },
+              HttpStatus.BAD_REQUEST,
+            ),
+          );
+        },
+      });
+    });
+  }
 
   async login(loginInfo: LoginUserDto): Promise<UserInterface> {
-    if (!loginInfo.loginToken) {
+    if (!loginInfo.username) {
       EXCEPTIONS.LOGIN_ERROR;
     }
     let userFound: Users;
-    switch (this.emailOrUsername(loginInfo.loginToken)) {
+    switch (this.emailOrUsername(loginInfo.username)) {
       case 'EMAIL':
-        userFound = await this.userService.getUserByEmail(loginInfo.loginToken);
+        userFound = await this.userService.getUserByEmail(loginInfo.username);
 
         if (!userFound) {
           throw new HttpException(
@@ -99,7 +200,7 @@ export class AuthService {
         break;
       case 'USERNAME':
         userFound = await this.userService.getUserByUserName(
-          loginInfo.loginToken,
+          loginInfo.username,
         );
 
         if (!userFound) {

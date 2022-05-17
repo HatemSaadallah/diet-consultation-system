@@ -7,7 +7,7 @@ export class LoginUserDto {
   @Transform(({ value }: TransformFnParams) =>
     typeof value === 'string' ? value.trim().toLowerCase() : value,
   )
-  loginToken: string;
+  username: string;
 
   @IsNotEmpty()
   password: string;

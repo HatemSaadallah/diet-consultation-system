@@ -44,6 +44,7 @@
     "dotenv": "^16.0.1",
     "faker": "^6.6.6",
     "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.5",
     "mysql2": "^2.3.3",
     "nest-winston": "^1.6.2",
     "reflect-metadata": "^0.1.13",
