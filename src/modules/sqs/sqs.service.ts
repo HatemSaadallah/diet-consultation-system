@@ -4,7 +4,6 @@ import { sqsClient } from 'src/common/aws/sqs.client';
 import AWS = require('aws-sdk');
 @Injectable()
 export class SQSService {
-  constructor() {}
   sqs = new AWS.SQS({
     apiVersion: '2012-11-05',
     region: 'us-east-1',
