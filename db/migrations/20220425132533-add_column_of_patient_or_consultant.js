@@ -6,12 +6,12 @@ module.exports = {
 
     return queryInterface.addColumn('Users', 'role', {
       type: Sequelize.ENUM,
-      values: ['patient', 'consultant'],
+      values: ['patient', 'consultant', 'admin'],
       allowNull: false,
     });
   },
 
-  down: (queryInterface, Sequelize) => {
+  down: (queryInterface) => {
     return queryInterface.removeColumn('Users', 'role');
   },
 };

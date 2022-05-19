@@ -4,4 +4,5 @@ export enum ROLE {
 
 export enum ROLES_TYPES {
   PUBLIC = 'public',
+  ADMIN = 'admin',
 }

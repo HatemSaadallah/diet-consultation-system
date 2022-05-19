@@ -6,7 +6,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLE } from '../constants/system.constants';
+import { ROLE, ROLES_TYPES } from '../constants/system.constants';
 import { ERRORS } from '../utils';
 
 @Injectable()
@@ -20,6 +20,9 @@ export class RolesGuard implements CanActivate {
 
     const request = await context.switchToHttp().getRequest();
     const user = await request.user;
+    if (user && user.role === ROLES_TYPES.ADMIN) {
+      return true;
+    }
     if (user && roles.includes(user.role)) {
       return true;
     }

@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { QuestionsModule } from './modules/questions/questions.module';
 import { AnswerModule } from './modules/answers/answers.module';
 import { requestLoggerMiddleware } from './common/middleware/cls.middleware';
+import { SQSModule } from './modules/sqs/sqs.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { requestLoggerMiddleware } from './common/middleware/cls.middleware';
     AuthModule,
     QuestionsModule,
     AnswerModule,
+    SQSModule,
     ConfigModule.forRoot({
       load: [configFile],
       isGlobal: true,

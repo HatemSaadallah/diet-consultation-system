@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.renameTable('Consultants', 'Users');
     await queryInterface.addColumn('Users', 'type', {
       type: Sequelize.ENUM,
-      values: ['patient', 'consultant'],
+      values: ['patient', 'consultant', 'admin'],
       allowNull: false,
     });
   },
